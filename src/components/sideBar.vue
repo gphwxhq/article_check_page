@@ -23,19 +23,5 @@ export default {
 };
 </script>
 <style>
-#app {
-  padding: 10px;
-  border-radius: 10px;
-  position: relative;
-  top:2%;
-  width: 95%;
-  /* transform: translateY(-50%); */
-  /* height: 100%; */
-  margin: 0 auto;
-  background-color: white;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  text-align: center;
-  color: #2c3e50;
-  /* margin-top: 60px; */
-}
+
 </style>
