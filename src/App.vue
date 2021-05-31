@@ -1,20 +1,20 @@
 <template>
   <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
-  <!-- <login/> -->
-  <stuPage></stuPage>
+   <router-view></router-view>
+  <!-- <stuPage></stuPage> -->
 </template>
 
 <script>
 // import HelloWorld from './components/HelloWorld.vue'
 // import login from './components/login.vue'
-import stuPage from './components/stuPage.vue'
+// import stuPage from './components/stuPage.vue'
 
 export default {
   name: 'App',
   components: {
     // HelloWorld,
     // login,
-    stuPage
+    // stuPage
   }
 }
 </script>

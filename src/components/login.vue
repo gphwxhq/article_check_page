@@ -1,4 +1,5 @@
 <template>
+<!-- <router-link to="/stuPage">Go to Home</router-link> -->
   <img alt="Vue logo" src="../assets/logo.png" />
   <van-form @submit="onSubmit">
     <van-field
@@ -37,6 +38,7 @@
 
 <script>
 import { reactive } from "vue";
+// import { useRouter} from 'vue-router'
 
 export default {
   name: "login",
@@ -45,20 +47,27 @@ export default {
   //     radio: "1",
   //   };
   // },
-  components: {},
+  methods:{
+    onSubmit (values)  {
+      console.log("submit", values);
+      this.$router.push({ path: '/stuPage' })
+    }
+  },
   setup() {
     const state = reactive({
       username: "",
       password: "",
       radio: "1",
     });
-    const onSubmit = (values) => {
-      console.log("submit", values);
-    };
+    // const onSubmit = (values) => {
+    //   console.log("submit", values);
+    //   const router=useRouter()
+    //   router.push({ path: '/stuPage' })
+    // };
 
     return {
       state,
-      onSubmit,
+      // onSubmit,
     };
   },
 };
