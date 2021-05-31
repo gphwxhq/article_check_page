@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import { Notify } from "vant";
 import { reactive } from "vue";
 // import { useRouter} from 'vue-router'
 
@@ -52,7 +53,12 @@ export default {
   methods:{
     onSubmit (values)  {
       console.log("submit", values);
-      this.$router.push({ path: '/stuPage' })
+      if(values.name=='1'&&values.passwd=='1')
+        this.$router.push({ path: '/stuPage' , query: { userId: 1111}})
+      else
+      // Notify(1)
+      Notify({ type: "danger", message: '用户名或密码错误' });
+
     }
   },
   setup() {

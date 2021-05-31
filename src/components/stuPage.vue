@@ -18,6 +18,9 @@ export default {
   components: {
     sideBar,
   },
+  mounted(){
+    console.log(this.$route.query)
+  }
 };
 </script>
 <style>
