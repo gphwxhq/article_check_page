@@ -20,7 +20,7 @@ export default {
 </script>
 
 <style>
-html,body{
+html,body,#app{
   /* position: relative; */
   height: 100%;
   background-color:#e0e0e0;

@@ -1,5 +1,6 @@
 <template>
 <!-- <router-link to="/stuPage">Go to Home</router-link> -->
+<div class="container">
   <img alt="Vue logo" src="../assets/logo.png" />
   <van-form @submit="onSubmit">
     <van-field
@@ -34,6 +35,7 @@
       </van-button>
     </div>
   </van-form>
+</div>
 </template>
 
 <script>
@@ -73,11 +75,12 @@ export default {
 };
 </script>
 <style>
-#app {
+.container {
   padding: 10px;
   border-radius: 10px;
   position: relative;
   top: 50%;
+  /* height: 80%; */
   width: 60%;
   transform: translateY(-50%);
   /* height: 100%; */
