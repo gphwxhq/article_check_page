@@ -1,6 +1,7 @@
 <template>
 <!-- <router-link to="/stuPage">Go to Home</router-link> -->
-<div class="container">
+<transition name="van-slide-down">
+<div class="container" v-show="show">
   <img alt="Vue logo" src="../assets/logo.png" />
   <van-form @submit="onSubmit" ref="mform">
     <van-field
@@ -36,6 +37,7 @@
     </div>
   </van-form>
 </div>
+</transition>
 </template>
 
 <script>
@@ -45,11 +47,14 @@ import { reactive } from "vue";
 
 export default {
   name: "login",
-  // data() {
-  //   return {
-  //     radio: "1",
-  //   };
-  // },
+  data() {
+    return {
+      show:false,
+    };
+  },
+  mounted(){
+    this.show=true
+  },
   methods:{
     onSubmit (values)  {
       console.log("submit", values);

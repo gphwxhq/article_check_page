@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import { Button, Form, Field } from 'vant'
 import App from './App.vue'
-import { Sidebar, SidebarItem, RadioGroup, Radio, Cell, CellGroup,Notify} from "vant";
+import { Sidebar, SidebarItem, RadioGroup, Radio,Notify} from "vant";
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 import page1 from './components/login.vue';
@@ -32,8 +32,8 @@ app.use(Sidebar)
 app.use(SidebarItem)
 app.use(RadioGroup)
 app.use(Radio)
-app.use(CellGroup)
-app.use(Cell)
+// app.use(CellGroup)
+// app.use(Cell)
 app.use(Notify)
 
 app.mount('#app')
