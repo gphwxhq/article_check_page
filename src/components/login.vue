@@ -2,7 +2,7 @@
 <!-- <router-link to="/stuPage">Go to Home</router-link> -->
 <div class="container">
   <img alt="Vue logo" src="../assets/logo.png" />
-  <van-form @submit="onSubmit">
+  <van-form @submit="onSubmit" ref="mform">
     <van-field
       v-model="state.username"
       name="name"
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { Notify } from "vant";
+// import { Notify } from "vant";
 import { reactive } from "vue";
 // import { useRouter} from 'vue-router'
 
@@ -53,11 +53,17 @@ export default {
   methods:{
     onSubmit (values)  {
       console.log("submit", values);
-      if(values.name=='1'&&values.passwd=='1')
+      // console.log(this.$root.user)
+      if(values.name=='1'&&values.passwd=='1'){
+        this.$root.user=values.name
         this.$router.push({ path: '/stuPage' , query: { userId: 1111}})
-      else
-      // Notify(1)
-      Notify({ type: "danger", message: '用户名或密码错误' });
+      }
+        
+      else{
+        this.state.password=''
+        this.$notify({ type: "danger", message: '用户名或密码错误' })
+      // Notify({ type: "danger", message: '用户名或密码错误' });
+      }
 
     }
   },

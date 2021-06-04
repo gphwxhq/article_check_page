@@ -5,7 +5,7 @@
   </van-sidebar>
 </template>
 <script>
-import { Notify } from "vant";
+// import { Notify } from "vant";
 
 export default {
   name: "sideBar",
@@ -17,7 +17,8 @@ export default {
   },
   methods: {
     onChange(index) {
-      Notify({ type: "primary", message: index });
+      this.$emit('change',index)
+      this.$notify({ type: "primary", message: index });
     },
   },
 };
