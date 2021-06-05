@@ -11,11 +11,11 @@
 
 export default {
   name: 'App',
-  data(){
-    return {
-    user:null
-    }
-  },
+  // data(){
+  //   return {
+  //   user:null
+  //   }
+  // },
   components: {
     // HelloWorld,
     // login,
