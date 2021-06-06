@@ -5,12 +5,12 @@
       src="../assets/logo.png"
     />
     <div style="display: inline-block">论文审核系统</div>
-    <div class="ltitle">教师端</div>
+    <div class="ltitle">管理端</div>
     <div class="rtitle">欢迎您,{{ user }}</div>
   </div>
   <sideBar
     @change="handleChange"
-    :mlist="['个人信息', '学生管理', '论文评审']"
+    :mlist="['人员管理', '论文信息管理', '系统设置']"
   ></sideBar>
   <router-view v-slot="{ Component }">
     <transition name="van-fade">
@@ -24,7 +24,7 @@
 import sideBar from "./sideBar.vue";
 
 export default {
-  name: "teacherPage",
+  name: "adminPage",
   data() {
     return {
       user: null,
@@ -48,7 +48,7 @@ export default {
       this.show = false;
       let self = this;
       setTimeout(function () {
-        self.$router.push({ name: "teacher"+index });
+        self.$router.push({ name: "admin"+index });
         self.show = true;
       }, 500);
     },

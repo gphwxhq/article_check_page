@@ -87,6 +87,8 @@ export default {
           this.$router.push({ path: "/stuPage"});
         else if(values.radio==2)
           this.$router.push({ path: "/teacherPage"});
+        else 
+          this.$router.push({ path: "/adminPage"});
       } else {
         this.state.password = "";
         this.$notify({ type: "danger", message: "用户名或密码错误" });

@@ -1,12 +1,12 @@
 <template>
-  <CellGroup title="流程">
+  <!-- <CellGroup title="流程"> -->
     <Steps :active="active">
       <Step>提交论文</Step>
       <Step>导师审阅</Step>
       <Step>完成</Step>
     </Steps>
-  </CellGroup>
-  <CellGroup title="基础信息">
+  <!-- </CellGroup> -->
+  <CellGroup title="论文信息">
     <Cell
       v-bind:title="key"
       v-bind:value="val"
@@ -38,3 +38,8 @@ export default {
   },
 };
 </script>
+<style>
+.van-cell-group__title{
+    text-align: left;
+}
+</style>

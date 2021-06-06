@@ -28,3 +28,8 @@ export default {
   },
 };
 </script>
+<style>
+.van-cell-group__title{
+    text-align: left;
+}
+</style>

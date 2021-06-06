@@ -3,20 +3,25 @@ import { Button, Form, Field } from 'vant'
 import App from './App.vue'
 import { RadioGroup, Radio, Notify, Icon } from "vant";
 import { createRouter, createWebHashHistory } from 'vue-router'
+import '@vant/touch-emulator';
 
 import page1 from './components/login.vue';
 import page2 from './components/stuPage.vue';
 import page3 from './components/teacherPage.vue';
+import page4 from './components/adminPage.vue';
 
 import baseInfo from './components/baseInfo.vue'
 import uploadArtile from './components/uploadArticle.vue'
 import checkResult from './components/checkResult.vue'
+
+import manageAllPerson from './components/manageAllPerson.vue'
 
 
 const routes = [
   { path: '/', name: 'login', component: page1 },
   { path: "/stuPage", name: 'stuPage', component: page2, children: [{ path: '',name:'stu0', component: baseInfo },{ path: 'uploadArticle',name:'stu1', component: uploadArtile },{ path: 'checkResult',name:'stu2', component: checkResult }] },
   { path: "/teacherPage", name: 'teacherPage', component: page3 },
+  { path: "/adminPage", name: 'adminPage', component: page4,children: [{ path: '',name:'admin0', component: manageAllPerson }]},
 ]
 
 localStorage['user'] = null
