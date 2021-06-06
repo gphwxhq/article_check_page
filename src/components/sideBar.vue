@@ -1,13 +1,13 @@
 <template>
 <div class="msidebar">
-  <van-sidebar  v-model="activeKey" @change="onChange">
+  <Sidebar  v-model="activeKey" @change="onChange">
     <!-- <div class="title">导航</div> -->
-    <van-sidebar-item v-bind:title="item" v-for="item in mlist" :key="item" />
-  </van-sidebar>
+    <SidebarItem v-bind:title="item" v-for="item in mlist" :key="item" />
+  </Sidebar>
 </div>
 </template>
 <script>
-// import { Notify } from "vant";
+import { Sidebar,SidebarItem } from "vant";
 
 export default {
   name: "sideBar",
@@ -17,10 +17,14 @@ export default {
       activeKey: 0,
     };
   },
+  components:{
+     Sidebar, 
+     SidebarItem,
+  },
   methods: {
     onChange(index) {
       this.$emit("change", index);
-      this.$notify({ type: "primary", message: index });
+      // this.$notify({ type: "primary", message: index });
     },
   },
 };

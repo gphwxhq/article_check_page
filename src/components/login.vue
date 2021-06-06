@@ -5,8 +5,8 @@
       <img alt="Vue logo" src="../assets/logo.png" />
       <van-form @submit="onSubmit" ref="mform">
         <van-field
-          v-model="state.username"
-          name="name"
+          v-model="state.userId"
+          name="userId"
           label="用户名"
           placeholder="用户名"
           :rules="[{ required: true, message: '请填写用户名' }]"
@@ -43,7 +43,7 @@
 <script>
 // import { Notify } from "vant";
 import { reactive } from "vue";
-import axios from 'axios'
+import axios from "axios";
 // import { useRouter} from 'vue-router'
 
 export default {
@@ -60,19 +60,30 @@ export default {
     onSubmit(values) {
       console.log("submit", values);
       // console.log(this.$root.user)
-      let url=''
-      let formData = new FormData();
-      formData.append("user", values.name);
-      formData.append("psswd", values.passwd);
-      // console.log(formData.get("user"))
-      
-      axios.post(url,formData).then(function(res){
-        console.log(res)
-      })
+      let url = "http://127.0.0.1:8081";
+      let data = {
+        user: values.userId,
+        passwd: values.passwd,
+      };
+      console.log(data);
 
-      if (values.name == "1" && values.passwd == "1") {
-        this.$root.user = values.name;
-        this.$router.push({ path: "/stuPage", query: { userId: 1111 } });
+      // axios.post(url,data).then(function(res){
+      //   console.log(res)
+      // })
+      axios({
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        method: "post",   
+        url: url,
+        data: data,
+      });
+
+      if (values.userId == "1" && values.passwd == "1") {
+        // this.$root.user = values.userId;
+        let storage=window.localStorage;
+        storage["user"]=values.userId;
+        this.$router.push({ path: "/stuPage"});
       } else {
         this.state.password = "";
         this.$notify({ type: "danger", message: "用户名或密码错误" });
@@ -82,7 +93,7 @@ export default {
   },
   setup() {
     const state = reactive({
-      username: "",
+      userId: "",
       password: "",
       radio: "1",
     });

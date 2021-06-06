@@ -7,140 +7,101 @@
     />
     <div style="display: inline-block">论文审核系统</div>
     <div class="ltitle">学生端</div>
-    <div class="rtitle">欢迎您,x</div>
+    <div class="rtitle">欢迎您,{{user}}</div>
   </div>
   <sideBar
     @change="handleChange"
     :mlist="['个人信息', '提交论文', '查看结果']"
   ></sideBar>
-  <div class="main">
-    <div style="width: 100%" v-if="type == 0">
-      <!-- <button v-on:click = "show = !show">点我</button> -->
-      <transition name="van-slide-left">
-        <table v-show="show" class="mtb">
-          <!-- <tr>
-        <th>Heading</th>
-        <th>Another Heading</th>
-      </tr> -->
+  <transition name="van-fade">
+    <div v-show="show" class="main">
+      <div style="width: 100%" v-if="type == 0">
+        <CellGroup title="基础信息">
+          <Cell v-bind:title=key v-bind:value=val v-for="(val,key) in baseInfo" :key="val"/>
+        </CellGroup>
+        <!-- <table class="mtb">
           <tr>
             <td class="gcol">姓名</td>
             <td class="gitem">row 1, cell 2</td>
+          </tr>
+          <tr>
             <td class="gcol">学号</td>
             <td class="gitem">row 1, cell 2</td>
           </tr>
           <tr>
-            <td class="gcol">etc</td>
+            <td class="gcol">专业</td>
             <td class="gitem">etc</td>
-            <td class="gcol">etc</td>
+          </tr>
+        </table> -->
+      </div>
+      <div style="width: 100%" v-if="type == 1">
+        <van-form @submit="onSubmit" ref="mform">
+          <van-field name="desc" v-model="state.text1" label="文本" />
+          <van-field name="uploader" label="文件上传">
+            <template #input>
+              <uploader
+                v-model="value"
+                :max-count="1"
+                :preview-full-image="false"
+                result-type="file"
+                accept="*"
+              >
+                <van-button icon="plus" type="primary">上传文件</van-button>
+              </uploader>
+            </template>
+          </van-field>
+          <van-button type="success" native-type="submit">提交</van-button>
+        </van-form>
+      </div>
+      <div style="width: 100%" v-if="type == 2">
+        <CellGroup title="基础信息">
+          <Cell v-bind:title=key v-bind:value=val v-for="(val,key) in articleInfo" :key="val"/>
+        </CellGroup>
+        <!-- <table class="mtb">
+          <tr>
+            <td class="gcol">论文编号</td>
+            <td class="gitem">row 1, cell 2</td>
+          </tr>
+          <tr>
+            <td class="gcol">标题</td>
+            <td class="gitem">row 1, cell 2</td>
+          </tr>
+          <tr>
+            <td class="gcol">审核状态</td>
             <td class="gitem">etc</td>
           </tr>
           <tr>
-            <td class="gcol">etc</td>
-            <td class="gitem">etc</td>
-            <td class="gcol">etc</td>
+            <td class="gcol">审核结果</td>
             <td class="gitem">etc</td>
           </tr>
-          <tr>
-            <td class="gcol">etc</td>
-            <td class="gitem">etc</td>
-            <td class="gcol">etc</td>
-            <td class="gitem">etc</td>
-          </tr>
-          <tr>
-            <td class="gcol">etc</td>
-            <td class="gitem">etc</td>
-            <td class="gcol">etc</td>
-            <td class="gitem">etc</td>
-          </tr>
-          <tr>
-            <td class="gcol">etc</td>
-            <td class="gitem">etc</td>
-            <td class="gcol">etc</td>
-            <td class="gitem">etc</td>
-          </tr>
-          <tr>
-            <td class="gcol">etc</td>
-            <td class="gitem">etc</td>
-            <td class="gcol">etc</td>
-            <td class="gitem">etc</td>
-          </tr>
-          <tr>
-            <td class="gcol">etc</td>
-            <td class="gitem">etc</td>
-            <td class="gcol">etc</td>
-            <td class="gitem">etc</td>
-          </tr>
-          <tr>
-            <td class="gcol">etc</td>
-            <td class="gitem">etc</td>
-            <td class="gcol">etc</td>
-            <td class="gitem">etc</td>
-          </tr>
-          <tr>
-            <td class="gcol">etc</td>
-            <td class="gitem">etc</td>
-            <td class="gcol">etc</td>
-            <td class="gitem">etc</td>
-          </tr>
-          <tr>
-            <td class="gcol">etc</td>
-            <td class="gitem">etc</td>
-            <td class="gcol">etc</td>
-            <td class="gitem">etc</td>
-          </tr>
-          <tr>
-            <td class="gcol">etc</td>
-            <td class="gitem">etc</td>
-            <td class="gcol">etc</td>
-            <td class="gitem">etc</td>
-          </tr>
-        </table>
-      </transition>
+        </table> -->
+      </div>
     </div>
-    <div style="width: 100%" v-if="type == 1">
-      <van-form @submit="onSubmit" ref="mform">
-        <van-field v-model="state.text1" label="文本" />
-      </van-form>
-      <van-field name="uploader" label="文件上传">
-        <template #input>
-          <uploader
-            v-model="value"
-            :max-count="1"
-            :preview-full-image="false"
-            result-type="file"
-            accept="*"
-          >
-            <van-button icon="plus" type="primary">上传文件</van-button>
-          </uploader>
-        </template>
-      </van-field>
-      <!-- <van-cell-group v-if="type == 0" style="width: 80%">
-      <van-cell title="单元格" value="内容" />
-      <van-cell title="单元格" value="内容" label="描述信息" />
-    </van-cell-group> -->
-      <!-- <van-cell-group v-else-if="type == 1" style="width: 80%">
-      <van-cell title="单元格2" value="内容" />
-      <van-cell title="单元格2" value="内容" label="描述信息" />
-    </van-cell-group>
-    <van-cell-group v-else style="width: 80%">
-      <van-cell title="单元格3" value="内容" />
-      <van-cell title="单元格3" value="内容" label="描述信息" />
-    </van-cell-group> -->
-      <van-button type="success">成功按钮</van-button>
-    </div>
-  </div>
+  </transition>
   <!-- </div> -->
 </template>
 <script>
 import sideBar from "./sideBar.vue";
 import { reactive, ref } from "vue";
-import { uploader } from "vant";
+import { uploader, CellGroup, Cell } from "vant";
 export default {
   name: "stuPage",
   data() {
     return {
+      user:null,
       type: 0,
       show: false,
+      baseInfo:{
+        姓名:1,
+        学号:2,
+        专业:3
+      },
+      articleInfo:{
+        '论文编号':1,
+        '标题':2,
+        '审核状态':3,
+        '审核结果':4
+      }
     };
   },
   setup() {
@@ -159,15 +120,32 @@ export default {
   components: {
     sideBar,
     uploader,
+    Cell,
+    CellGroup,
   },
   mounted() {
-    console.log(this.$route.query);
+    // console.log(this.$route.query);
     // console.log(this.$root.user);
+    let storage=window.localStorage;
+    this.user=storage.getItem('user')
+    console.log(this.user)
     this.show = true;
   },
   methods: {
     handleChange(index) {
-      this.type = index;
+      this.show = false;
+      let self = this;
+      setTimeout(function () {
+        // for (let i = 0; i < self.show.length; i++) {
+        //   if (index != i) self.show[i] = false;
+        //   else self.show[i] = true;
+        // }
+        self.type = index;
+        self.show = true;
+      }, 500);
+    },
+    onSubmit(values) {
+      console.log("submit", values);
     },
   },
 };
@@ -183,9 +161,10 @@ export default {
   margin-right: 10px;
   padding: 10px;
   border-radius: 10px;
-  display: flex;
+  /* display: flex;
   flex-direction: row;
   justify-content: space-around;
+  align-items: center; */
   /* top: 2%; */
   /* width: 95%; */
   /* transform: translateY(-50%); */
@@ -204,7 +183,7 @@ export default {
   padding-left: 5px;
   padding-top: 5px;
   padding-bottom: 5px;
-  font-size: 30px;
+  font-size: 25px;
   /* margin-bottom: 10px; */
   color: white;
 }
@@ -214,14 +193,14 @@ export default {
   font-size: 20px;
 }
 .rtitle {
-  padding-top: 5px;
-  font-size: 20px;
+  padding-top: 9px;
+  font-size: 15px;
   float: right;
   color: rgb(237, 243, 244);
 }
 .mtb {
   border: solid 1px;
-
+  width: 100%;
   border-collapse: collapse;
 }
 tr {
@@ -232,14 +211,18 @@ td {
 }
 .gcol {
   background-color: rgb(237, 243, 244);
-  width: 100px;
+  /* width: 100px; */
+  width: 10%;
   padding-right: 5px;
   text-align: right;
 }
 .gitem {
-  width: 200px;
+  /* width: 200px; */
+  width: 90%;
   text-align: left;
   padding-left: 5px;
 }
-
+.van-cell-group__title{
+  text-align: left;
+}
 </style>
