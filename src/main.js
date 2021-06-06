@@ -1,19 +1,25 @@
 import { createApp } from 'vue'
 import { Button, Form, Field } from 'vant'
 import App from './App.vue'
-import { RadioGroup, Radio,Notify,Icon} from "vant";
+import { RadioGroup, Radio, Notify, Icon } from "vant";
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 import page1 from './components/login.vue';
 import page2 from './components/stuPage.vue';
+import page3 from './components/teacherPage.vue';
+
+import baseInfo from './components/baseInfo.vue'
+import uploadArtile from './components/uploadArticle.vue'
+import checkResult from './components/checkResult.vue'
 
 
 const routes = [
   { path: '/', name: 'login', component: page1 },
-  { path: "/stuPage", name: 'stuPage', component: page2 },
+  { path: "/stuPage", name: 'stuPage', component: page2, children: [{ path: '',name:'stu0', component: baseInfo },{ path: 'uploadArticle',name:'stu1', component: uploadArtile },{ path: 'checkResult',name:'stu2', component: checkResult }] },
+  { path: "/teacherPage", name: 'teacherPage', component: page3 },
 ]
 
-localStorage['user']=null
+localStorage['user'] = null
 
 const router = createRouter({
   // 4. 内部提供了 history 模式的实现。为了简单起见，我们在这里使用 hash 模式。
@@ -21,7 +27,7 @@ const router = createRouter({
   routes, // `routes: routes` 的缩写
 })
 router.beforeEach((to, from, next) => {
-  if (to.name !== 'login'&&localStorage.getItem('user')=='null' ) next({ name: 'login' })
+  if (to.name !== 'login' && localStorage.getItem('user') == 'null') next({ name: 'login' })
   else next()
 })
 // &&localStorage.getItem('user')==null

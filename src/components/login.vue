@@ -83,7 +83,10 @@ export default {
         // this.$root.user = values.userId;
         let storage=window.localStorage;
         storage["user"]=values.userId;
-        this.$router.push({ path: "/stuPage"});
+        if(values.radio==1)
+          this.$router.push({ path: "/stuPage"});
+        else if(values.radio==2)
+          this.$router.push({ path: "/teacherPage"});
       } else {
         this.state.password = "";
         this.$notify({ type: "danger", message: "用户名或密码错误" });
