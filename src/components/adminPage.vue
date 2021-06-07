@@ -1,5 +1,5 @@
 <template>
-  <div class="title">
+  <!-- <div class="title">
     <img
       style="width: 25px; height: 25px; padding-right: 5px"
       src="../assets/logo.png"
@@ -7,7 +7,8 @@
     <div style="display: inline-block">论文审核系统</div>
     <div class="ltitle">管理端</div>
     <div class="rtitle">欢迎您,{{ user }}</div>
-  </div>
+  </div> -->
+  <mtitle user="管理端"></mtitle>
   <sideBar
     @change="handleChange"
     :mlist="['人员管理', '论文信息管理', '系统设置']"
@@ -22,7 +23,7 @@
 </template>
 <script>
 import sideBar from "./sideBar.vue";
-
+import mtitle from "./mtitle.vue";
 export default {
   name: "adminPage",
   data() {
@@ -33,6 +34,7 @@ export default {
   },
   components: {
     sideBar,
+    mtitle
   },
   mounted() {
     // console.log(this.$route.query);
@@ -63,6 +65,7 @@ export default {
   margin-top: 60px;
 } */
 .main {
+  margin-top: 43px;
   margin-left: 90px;
   margin-right: 10px;
   padding: 10px;
@@ -79,30 +82,6 @@ export default {
   background-color: white;
   text-align: center;
   /* margin-top: 60px; */
-}
-.title {
-  background-color: rgb(54, 65, 80);
-  /* padding-right: 50px; */
-  /* text-align: center; */
-  /* width: 100%; */
-  padding-right: 5px;
-  padding-left: 5px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  font-size: 25px;
-  /* margin-bottom: 10px; */
-  color: white;
-}
-.ltitle {
-  padding-left: 10px;
-  display: inline-block;
-  font-size: 20px;
-}
-.rtitle {
-  padding-top: 9px;
-  font-size: 15px;
-  float: right;
-  color: rgb(237, 243, 244);
 }
 /* .mtb {
   border: solid 1px;

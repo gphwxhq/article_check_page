@@ -37,6 +37,7 @@ export default {
 }
 .msidebar {
   position: fixed;
+  margin-top:43px;
   background-color: rgb(54, 65, 80);
   height: 100%;
 }

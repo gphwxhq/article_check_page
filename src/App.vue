@@ -31,6 +31,6 @@ html,body,#app{
   background-color:#e0e0e0;
   margin: 0;
   padding:0;
-  overflow:hidden;
+  overflow-y:auto;
 }
 </style>

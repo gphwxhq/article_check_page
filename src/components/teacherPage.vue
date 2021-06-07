@@ -1,13 +1,5 @@
 <template>
-  <div class="title">
-    <img
-      style="width: 25px; height: 25px; padding-right: 5px"
-      src="../assets/logo.png"
-    />
-    <div style="display: inline-block">论文审核系统</div>
-    <div class="ltitle">教师端</div>
-    <div class="rtitle">欢迎您,{{ user }}</div>
-  </div>
+  <mtitle user="教师端"/>
   <sideBar
     @change="handleChange"
     :mlist="['个人信息', '学生管理', '论文评审']"
@@ -22,7 +14,7 @@
 </template>
 <script>
 import sideBar from "./sideBar.vue";
-
+import mtitle from "./mtitle.vue";
 export default {
   name: "teacherPage",
   data() {
@@ -33,6 +25,7 @@ export default {
   },
   components: {
     sideBar,
+    mtitle
   },
   mounted() {
     // console.log(this.$route.query);
