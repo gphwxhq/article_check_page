@@ -15,13 +15,15 @@ import uploadArtile from './components/uploadArticle.vue'
 import checkResult from './components/checkResult.vue'
 
 import manageAllPerson from './components/manageAllPerson.vue'
+import manageAllArticle from './components/manageAllArticle.vue'
+
 
 
 const routes = [
   { path: '/', name: 'login', component: page1 },
   { path: "/stuPage", name: 'stuPage', component: page2, children: [{ path: '',name:'stu0', component: baseInfo },{ path: 'uploadArticle',name:'stu1', component: uploadArtile },{ path: 'checkResult',name:'stu2', component: checkResult }] },
   { path: "/teacherPage", name: 'teacherPage', component: page3 },
-  { path: "/adminPage", name: 'adminPage', component: page4,children: [{ path: '',name:'admin0', component: manageAllPerson }]},
+  { path: "/adminPage", name: 'adminPage', component: page4,children: [{ path: '',name:'admin0', component: manageAllPerson },{ path: '',name:'admin1', component: manageAllArticle }]},
 ]
 
 localStorage['user'] = null

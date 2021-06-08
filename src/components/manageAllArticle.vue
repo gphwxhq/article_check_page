@@ -5,56 +5,31 @@
     input-align="center"
   />
   <!-- <div> -->
-  <Button type="primary" @click="onAdd">添加</Button>
-  <Button type="primary" @click="selectAll">全选</Button>
   <List
     v-model:loading="state.loading"
     :finished="state.finished"
     finished-text="没有更多了"
     @load="onLoad"
   >
-    <CheckboxGroup v-model="checked" ref="checkboxGroup">
-      <template v-for="(item, i) in state.list" :key="item">
-        <!-- <div class="person_block"> -->
-        <Cell :title="item">
-          <template #icon>
-            <Checkbox :name="item"/>
-          </template>
-          <Button type="primary" @click="onModify(i)">修改</Button>
-          <Button type="danger" @click="onDelete(i)">删除</Button>
-        </Cell>
-        <!-- </div> -->
-      </template>
-    </CheckboxGroup>
+    <template v-for="(item, i) in state.list" :key="item">
+      <Cell :title="item"
+        ><Button type="primary" @click="onModify(i)">修改</Button
+        ><Button type="danger" @click="onDelete(i)">删除</Button></Cell
+      >
+    </template>
   </List>
   <!-- </div> -->
 </template>
 <script>
-import {
-  Search,
-  List,
-  Cell,
-  Button,
-  Dialog,
-  Checkbox,
-  CheckboxGroup,
-} from "vant";
+import { Search, List, Cell, Button, Dialog } from "vant";
 import { ref, reactive } from "vue";
 export default {
-  name: "manageAllPerson",
-  data() {
-    return {
-      checked: [],
-      checkAll:true
-    };
-  },
+  name: "manageAllArticle",
   components: {
     Search,
     List,
     Cell,
     Button,
-    Checkbox,
-    CheckboxGroup,
   },
   setup() {
     const searchValue = ref("");
@@ -90,7 +65,6 @@ export default {
     };
   },
   methods: {
-    onAdd() {},
     onModify(a) {
       console.log(a);
     },
@@ -106,10 +80,6 @@ export default {
           // on cancel
         });
     },
-    selectAll(){
-      this.$refs.checkboxGroup.toggleAll(this.checkAll);
-      this.checkAll=!this.checkAll;
-    }
   },
 };
 </script>
