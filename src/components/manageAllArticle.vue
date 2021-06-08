@@ -84,9 +84,9 @@ export default {
 };
 </script>
 <style>
-.van-search {
+/* .van-search {
   position: sticky;
   top: 43px;
   z-index: 1;
-}
+} */
 </style>

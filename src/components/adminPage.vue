@@ -64,25 +64,7 @@ export default {
   height: 100%;
   margin-top: 60px;
 } */
-.main {
-  margin-top: 43px;
-  margin-left: 90px;
-  margin-right: 10px;
-  padding: 10px;
-  border-radius: 10px;
-  /* display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center; */
-  /* top: 2%; */
-  /* width: 95%; */
-  /* transform: translateY(-50%); */
-  /* height: 100%; */
-  /* margin: 0 auto; */
-  background-color: white;
-  text-align: center;
-  /* margin-top: 60px; */
-}
+
 /* .mtb {
   border: solid 1px;
   width: 100%;

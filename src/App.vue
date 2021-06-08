@@ -33,4 +33,23 @@ html,body,#app{
   padding:0;
   overflow-y:auto;
 }
+.main {
+  margin-top: 46px;
+  margin-left: 90px;
+  margin-right: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  /* display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center; */
+  /* top: 2%; */
+  /* width: 95%; */
+  /* transform: translateY(-50%); */
+  /* height: 100%; */
+  /* margin: 0 auto; */
+  background-color: white;
+  text-align: center;
+  /* margin-top: 60px; */
+}
 </style>
