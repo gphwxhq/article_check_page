@@ -4,7 +4,7 @@
       style="width: 25px; height: 25px; padding-right: 5px"
       src="../assets/logo.png"
     />
-    <div style="display: inline-block">论文审核系统</div>
+    <div style="display: inline-block;font-size: 25px;font-family:'微软雅黑';">论文审核系统</div>
     <div class="ltitle">{{user}}</div>
     <div class="rtitle">欢迎您,{{ user }}</div>
   </div>
@@ -27,7 +27,6 @@ export default {
   /* text-align: center; */
   /* width: 100%; */
   padding: 5px;
-  font-size: 25px;
   /* margin-bottom: 10px; */
   color: white;
 }

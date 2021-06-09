@@ -34,7 +34,7 @@ html,body,#app{
   overflow-y:auto;
 }
 .main {
-  margin-top: 46px;
+  margin-top: 43px;
   margin-left: 90px;
   margin-right: 10px;
   padding: 10px;

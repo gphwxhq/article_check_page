@@ -130,7 +130,7 @@ export default {
 <style>
 .van-search {
   position: sticky;
-  top: 46px;
+  top: 43px;
   z-index: 1;
 }
 .person_button_group {
