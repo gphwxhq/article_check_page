@@ -43,7 +43,6 @@
 <script>
 // import { Notify } from "vant";
 import { reactive } from "vue";
-import axios from "axios";
 // import { useRouter} from 'vue-router'
 
 export default {
@@ -60,7 +59,6 @@ export default {
     onSubmit(values) {
       console.log("submit", values);
       // console.log(this.$root.user)
-      let url = "http://127.0.0.1:8081";
       let data = {
         user: values.userId,
         passwd: values.passwd,
@@ -70,13 +68,20 @@ export default {
       // axios.post(url,data).then(function(res){
       //   console.log(res)
       // })
-      axios({
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
+      this.$http({
+        // headers: {
+        //   "Content-Type": "application/x-www-form-urlencoded",
+        // },
         method: "post",   
-        url: url,
+        url: '/login',
         data: data,
+      }).then(function(res){
+        if(res.status==200){
+          console.log(res.data)
+        }
+        else{
+          this.$notify({ type: "danger", message: "网络连接错误" });
+        }
       });
 
       if (values.userId == "1" && values.passwd == "1") {

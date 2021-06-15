@@ -1,12 +1,14 @@
 <template>
-  <Cell center title="标题">
+<CellGroup title="基础设置">
+  <Cell title="标题">
     <template #right-icon>
       <Switch v-model="checked" size="24" />
     </template>
   </Cell>
+</CellGroup>
 </template>
 <script>
-import { Cell, Switch } from "vant";
+import { Cell,CellGroup, Switch } from "vant";
 export default {
   name: "systemSetting",
   data() {
@@ -16,6 +18,7 @@ export default {
   },
   components: {
     Cell,
+    CellGroup,
     Switch,
   },
 };

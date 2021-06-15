@@ -1,6 +1,7 @@
-import { createApp } from 'vue'
+import { createApp} from 'vue'
 import { Button, Form, Field } from 'vant'
 import App from './App.vue'
+import axios from "axios";
 import { RadioGroup, Radio, Notify, Icon } from "vant";
 import { createRouter, createWebHashHistory } from 'vue-router'
 import '@vant/touch-emulator';
@@ -19,6 +20,8 @@ import manageAllArticle from './components/manageAllArticle.vue'
 import systemSetting from './components/systemSetting.vue'
 
 
+axios.defaults.timeout=5000;
+// axios.defaults.headers.post['content-type']='application/x-www-form-urlencoded';
 
 const routes = [
   { path: '/', name: 'login', component: page1 },
@@ -41,6 +44,8 @@ router.beforeEach((to, from, next) => {
 // &&localStorage.getItem('user')==null
 
 const app = createApp(App)
+
+app.config.globalProperties.$http = axios
 
 app.use(router)
 app.use(Button)
