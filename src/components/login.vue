@@ -80,7 +80,7 @@ export default {
       }).then(function (res) {
         if (res.status == 200) {
           console.log(res.data);
-          if (res.data.Pass) {
+          if (res.data.LoginPass) {
             let storage = window.localStorage;
             storage["user"] = values.userId;
             if (values.radio == 1) self.$router.push({ path: "/stuPage" });

@@ -41,7 +41,7 @@ export default {
           self.baseInfo.姓名=res.data.Sname
           self.baseInfo.学号=res.data.Sno
           self.baseInfo.专业=res.data.Sdept
-          self.baseInfo.老师=res.data.teacher
+          self.baseInfo.老师=res.data.Teacher
 
         } else {
           self.$notify({ type: "danger", message: "网络连接错误" });
