@@ -23,8 +23,14 @@ http.createServer(function (req, res) {
         req.on('end', () => {
             data = JSON.parse(data)
             console.log(data) // 数据传输完，打印数据的内容
+            let dData={
+                'Pass':false
+            }
+            if(data.user==1){
+                dData.Pass=true
+            }
             res.writeHead(200, { 'Content-type': 'application/json' });
-            res.end(JSON.stringify(data))
+            res.end(JSON.stringify(dData))
         })
     }
     else {

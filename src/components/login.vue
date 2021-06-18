@@ -62,43 +62,52 @@ export default {
       let data = {
         user: values.userId,
         passwd: values.passwd,
+        role: values.radio,
       };
       console.log(data);
 
       // axios.post(url,data).then(function(res){
       //   console.log(res)
       // })
+      let self=this
       this.$http({
         // headers: {
         //   "Content-Type": "application/x-www-form-urlencoded",
         // },
-        method: "post",   
-        url: '/login',
+        method: "post",
+        url: "/login",
         data: data,
-      }).then(function(res){
-        if(res.status==200){
-          console.log(res.data)
-        }
-        else{
-          this.$notify({ type: "danger", message: "网络连接错误" });
+      }).then(function (res) {
+        if (res.status == 200) {
+          console.log(res.data);
+          if (res.data.Pass) {
+            let storage = window.localStorage;
+            storage["user"] = values.userId;
+            if (values.radio == 1) self.$router.push({ path: "/stuPage" });
+            else if (values.radio == 2)
+              self.$router.push({ path: "/teacherPage" });
+            else self.$router.push({ path: "/adminPage" });
+          } else {
+            self.state.password = "";
+            self.$notify({ type: "danger", message: "用户名或密码错误" });
+          }
+        } else {
+          self.$notify({ type: "danger", message: "网络连接错误" });
         }
       });
 
-      if (values.userId == "1" && values.passwd == "1") {
-        // this.$root.user = values.userId;
-        let storage=window.localStorage;
-        storage["user"]=values.userId;
-        if(values.radio==1)
-          this.$router.push({ path: "/stuPage"});
-        else if(values.radio==2)
-          this.$router.push({ path: "/teacherPage"});
-        else 
-          this.$router.push({ path: "/adminPage"});
-      } else {
-        this.state.password = "";
-        this.$notify({ type: "danger", message: "用户名或密码错误" });
-        // Notify({ type: "danger", message: '用户名或密码错误' });
-      }
+      // if (values.userId == "1" && values.passwd == "1") {
+      //   // this.$root.user = values.userId;
+      //   let storage = window.localStorage;
+      //   storage["user"] = values.userId;
+      //   if (values.radio == 1) this.$router.push({ path: "/stuPage" });
+      //   else if (values.radio == 2) this.$router.push({ path: "/teacherPage" });
+      //   else this.$router.push({ path: "/adminPage" });
+      // } else {
+      //   this.state.password = "";
+      //   this.$notify({ type: "danger", message: "用户名或密码错误" });
+      //   // Notify({ type: "danger", message: '用户名或密码错误' });
+      // }
     },
   },
   setup() {
