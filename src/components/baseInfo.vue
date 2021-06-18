@@ -26,6 +26,28 @@ export default {
     Cell,
     CellGroup,
   },
+  mounted(){
+    let self=this
+      this.$http({
+        // headers: {
+        //   "Content-Type": "application/x-www-form-urlencoded",
+        // },
+        method: "post",
+        url: "/login",
+        data: data,
+      }).then(function (res) {
+        if (res.status == 200) {
+          console.log(res.data);
+          self.baseInfo.姓名=res.data.Sname
+          self.baseInfo.学号=res.data.Sno
+          self.baseInfo.专业=res.data.Sdept
+          self.baseInfo.老师=res.data.teacher
+
+        } else {
+          self.$notify({ type: "danger", message: "网络连接错误" });
+        }
+      });
+  }
 };
 </script>
 <style>
