@@ -1,8 +1,7 @@
 import { createApp} from 'vue'
-import { Button, Form, Field } from 'vant'
 import App from './App.vue'
 import axios from "axios";
-import { RadioGroup, Radio, Notify, Icon } from "vant";
+import { RadioGroup, Radio, Notify, Icon,Button, Form, Field, Loading,Empty  } from "vant";
 import { createRouter, createWebHashHistory } from 'vue-router'
 import '@vant/touch-emulator';
 
@@ -53,8 +52,9 @@ app.use(Form)
 app.use(Field)
 app.use(RadioGroup)
 app.use(Radio)
-// app.use(CellGroup)
+app.use(Loading)
 app.use(Icon)
+app.use(Empty)
 app.use(Notify)
 
 app.mount('#app')

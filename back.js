@@ -1,14 +1,14 @@
 var http = require('http');
 // var querystring = require('querystring');
 // var util = require('util');
-var url=require('url')
+var url = require('url')
 
 http.createServer(function (req, res) {
     //获取post请求中的参数
-    var myURL = new URL(req.url,'http://localhost:8081/');
+    var myURL = new URL(req.url, 'http://localhost:8081/');
     var pathname = myURL.pathname;
     console.log(myURL)
-//    console.log(myURL.searchParams.get('a') ) 
+    //    console.log(myURL.searchParams.get('a') ) 
     if (pathname == '/') {
         res.writeHead(200, {
             'Content-Type': 'text/plain'
@@ -23,15 +23,43 @@ http.createServer(function (req, res) {
         req.on('end', () => {
             data = JSON.parse(data)
             console.log(data) // 数据传输完，打印数据的内容
-            let dData={
-                'Pass':false
+            let dData = {
+                'LoginPass': false
             }
-            if(data.user==1){
-                dData.Pass=true
+            if (data.user == 1) {
+                dData.LoginPass = true
             }
             res.writeHead(200, { 'Content-type': 'application/json' });
             res.end(JSON.stringify(dData))
         })
+    }
+    else if (pathname == '/stuPage') {
+        let getstu = myURL.searchParams.get('getstu')
+        //console.log(myURL.searchParams.get('getstu') ) 
+        console.log(getstu)
+        data = {
+            "Sname": 'Sname',
+            "Sno": "Sno",
+            "Sdept": "Sdept",
+            "Teacher": "Teacher"
+        }
+        setTimeout(function(){
+            res.writeHead(200, { 'Content-type': 'application/json' });
+            res.end(JSON.stringify(data))
+        },2000)
+    }
+    else if (pathname == '/stuPage/checkResult') {
+        let getstu = myURL.searchParams.get('getstu')
+        //console.log(myURL.searchParams.get('getstu') ) 
+        console.log(getstu)
+        res.writeHead(200, { 'Content-type': 'application/json' });
+        data = {
+            "PaperNo": "PaperNo",
+            "Title": "Title",
+            "Checkin": "Checkin",
+            "Status":"Status"
+        }
+        res.end(JSON.stringify(data))
     }
     else {
         res.writeHead(404, {

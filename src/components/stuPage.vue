@@ -1,5 +1,5 @@
 <template>
-  <mtitle user="学生端"/>
+  <mtitle user="学生端" :userName="userName"/>
   <sideBar
     @change="handleChange"
     :mlist="['个人信息', '提交论文', '查看结果']"
@@ -7,7 +7,7 @@
   <router-view v-slot="{ Component }">
     <transition name="van-fade">
       <div v-show="show" class="main">
-        <component :is="Component" />
+        <component :is="Component" @name="setName"/>
       </div>
     </transition>
   </router-view>
@@ -20,6 +20,7 @@ export default {
   data() {
     return {
       user: null,
+      userName:null,
       show: false,
     };
   },
@@ -32,6 +33,7 @@ export default {
     // console.log(this.$root.user);
     let storage = window.localStorage;
     this.user = storage.getItem("user");
+    this.userName=this.user
     console.log(this.user);
     // this.$router.push({ path: "baseInfo" });
     this.show = true;
@@ -45,6 +47,9 @@ export default {
         self.show = true;
       }, 500);
     },
+    setName(name){
+      this.userName=name;
+    }
   }
     
 };

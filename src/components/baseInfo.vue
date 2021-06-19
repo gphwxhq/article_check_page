@@ -1,5 +1,7 @@
 <template>
-  <CellGroup title="基础信息">
+  <van-loading size="24px" vertical v-if="isLoading&&!isError">加载中...</van-loading>
+  <van-empty description="加载错误" v-if="isError"/>
+  <CellGroup title="基础信息" v-if="!isLoading&&!isError">
     <Cell
       v-bind:title="key"
       v-bind:value="val"
@@ -20,38 +22,45 @@ export default {
         专业: 3,
         指导老师: 4,
       },
+      isLoading:true,
+      isError:false
     };
   },
   components: {
     Cell,
     CellGroup,
   },
-  mounted(){
-    let self=this
-      this.$http({
-        // headers: {
-        //   "Content-Type": "application/x-www-form-urlencoded",
-        // },
-        method: "post",
-        url: "/login",
-        data: data,
-      }).then(function (res) {
-        if (res.status == 200) {
-          console.log(res.data);
-          self.baseInfo.姓名=res.data.Sname
-          self.baseInfo.学号=res.data.Sno
-          self.baseInfo.专业=res.data.Sdept
-          self.baseInfo.老师=res.data.Teacher
-
-        } else {
-          self.$notify({ type: "danger", message: "网络连接错误" });
-        }
-      });
-  }
+  mounted() {
+    let storage = window.localStorage;
+    this.user = storage.getItem("user");
+    let self = this;
+    this.$http({
+      // headers: {
+      //   "Content-Type": "application/x-www-form-urlencoded",
+      // },
+      method: "get",
+      url: "/stuPage",
+      params: {
+        getstu: this.user,
+      },
+    }).then(function (res) {
+      if (res.status == 200) {
+        console.log(res.data);
+        self.baseInfo.姓名 = res.data.Sname;
+        self.baseInfo.学号 = res.data.Sno;
+        self.baseInfo.专业 = res.data.Sdept;
+        self.baseInfo.指导老师 = res.data.Teacher;
+        self.$emit("name", res.data.Sname);
+        self.isLoading=false
+      } else {
+        self.$notify({ type: "danger", message: "网络连接错误" });
+      }
+    });
+  },
 };
 </script>
 <style>
-.van-cell-group__title{
-    text-align: left;
+.van-cell-group__title {
+  text-align: left;
 }
 </style>

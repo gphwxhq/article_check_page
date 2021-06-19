@@ -36,6 +36,32 @@ export default {
     Steps,
     Step,
   },
+  mounted(){
+    let storage = window.localStorage;
+    this.user = storage.getItem("user");
+    let self=this
+      this.$http({
+        // headers: {
+        //   "Content-Type": "application/x-www-form-urlencoded",
+        // },
+        method: "get",
+        url: "/stuPage/checkResult",
+        params: {
+          'getstu':this.user
+        }
+      }).then(function (res) {
+        if (res.status == 200) {
+          console.log(res.data);
+          self.articleInfo.论文编号=res.data.PaperNo
+          self.articleInfo.标题=res.data.Title
+          self.articleInfo.审核状态=res.data.Checkin
+          self.articleInfo.审核结果=res.data.Status
+          self.$emit('name', res.data.Sname)
+        } else {
+          self.$notify({ type: "danger", message: "网络连接错误" });
+        }
+      });
+  }
 };
 </script>
 <style>

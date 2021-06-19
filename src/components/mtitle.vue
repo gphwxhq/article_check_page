@@ -6,13 +6,13 @@
     />
     <div style="display: inline-block;font-size: 25px;font-family:'微软雅黑';">论文审核系统</div>
     <div class="ltitle">{{user}}</div>
-    <div class="rtitle">欢迎您,{{ user }}</div>
+    <div class="rtitle">欢迎您,{{ userName }}</div>
   </div>
 </template>
 <script>
 export default {
   name: "mtitle",
-  props: ["user"],
+  props: ["user","userName"],
 };
 </script>
 <style>
