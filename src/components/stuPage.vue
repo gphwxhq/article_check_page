@@ -4,10 +4,10 @@
     @change="handleChange"
     :mlist="['个人信息', '提交论文', '查看结果']"
   ></sideBar>
-  <router-view v-slot="{ Component }">
+  <router-view v-slot="{ Component }" @name="setName">
     <transition name="van-fade">
       <div v-show="show" class="main">
-        <component :is="Component" @name="setName"/>
+        <component :is="Component" />
       </div>
     </transition>
   </router-view>
@@ -48,7 +48,8 @@ export default {
       }, 500);
     },
     setName(name){
-      this.userName=name;
+      if(name!=null)
+        this.userName=name;
     }
   }
     

@@ -63,20 +63,21 @@ export default {
       },
       uploadInfo: {
         title: "论文题目",
-        author: "作者",
-        words: "关键词",
-        num: "字数",
-        digest: "摘要",
+        // author: "作者",
+        // words: "关键词",
+        // num: "字数",
+        // digest: "摘要",
       },
     };
   },
+  emits: ["name"],
   setup() {
     const state = reactive({
       title: "",
-      author: "",
-      words: "",
-      num: "",
-      digest: "",
+      // author: "",
+      // words: "",
+      // num: "",
+      // digest: "",
     });
     const fileList = ref([]);
     // const value = ref([{ url: 'https://img.yzcdn.cn/vant/leaf.jpg' }]);
@@ -90,6 +91,9 @@ export default {
     Step,
     Steps,
     Checkbox,
+  },
+  mounted(){
+    // this.$emit("name", null);
   },
   methods: {
     onSubmit(values) {

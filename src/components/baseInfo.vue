@@ -26,6 +26,7 @@ export default {
       isError:false
     };
   },
+  emits: ["name"],
   components: {
     Cell,
     CellGroup,

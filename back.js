@@ -7,7 +7,7 @@ http.createServer(function (req, res) {
     //获取post请求中的参数
     var myURL = new URL(req.url, 'http://localhost:8081/');
     var pathname = myURL.pathname;
-    console.log(myURL)
+    // console.log(myURL)
     //    console.log(myURL.searchParams.get('a') ) 
     if (pathname == '/') {
         res.writeHead(200, {
@@ -56,7 +56,7 @@ http.createServer(function (req, res) {
         data = {
             "PaperNo": "PaperNo",
             "Title": "Title",
-            "Checkin": "Checkin",
+            "Checkin": "通过",
             "Status":"Status"
         }
         res.end(JSON.stringify(data))

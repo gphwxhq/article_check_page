@@ -30,6 +30,7 @@ export default {
       },
     };
   },
+  emits: ["name"],
   components: {
     CellGroup,
     Cell,
@@ -37,6 +38,7 @@ export default {
     Step,
   },
   mounted(){
+    // this.$emit("name", null);
     let storage = window.localStorage;
     this.user = storage.getItem("user");
     let self=this
@@ -56,7 +58,10 @@ export default {
           self.articleInfo.标题=res.data.Title
           self.articleInfo.审核状态=res.data.Checkin
           self.articleInfo.审核结果=res.data.Status
-          self.$emit('name', res.data.Sname)
+          if(res.data.Status=='通过')
+            self.active=2
+          else if(res.data.Checkin=='通过')
+            self.active=1
         } else {
           self.$notify({ type: "danger", message: "网络连接错误" });
         }
