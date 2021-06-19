@@ -25,6 +25,7 @@
           :preview-full-image="false"
           result-type="file"
           accept="*"
+          :after-read="afterRead"
         >
           <van-button icon="plus" type="primary">上传文件</van-button>
         </uploader>
@@ -92,7 +93,9 @@ export default {
     Steps,
     Checkbox,
   },
-  mounted(){
+  mounted() {
+    let storage = window.localStorage;
+    this.user = storage.getItem("user");
     // this.$emit("name", null);
   },
   methods: {
@@ -106,9 +109,9 @@ export default {
         console.log(this.fData);
       }
       if (this.active == 2) {
-        if(!this.checked){
-          this.$notify({ type: "danger", message: "请阅读并同意条款" })
-          return
+        if (!this.checked) {
+          this.$notify({ type: "danger", message: "请阅读并同意条款" });
+          return;
         }
         let data = {};
         for (let key in this.fData[0]) {
@@ -121,6 +124,31 @@ export default {
     },
     clickStep(index) {
       if (this.active < 3 && this.active > index) this.active = index;
+    },
+    afterRead(file) {
+      console.log(file)
+      file.status = "uploading";
+      file.message = "上传中...";
+      let formData = new FormData();
+      formData.append("user", this.user);
+      formData.append("file", file.file);
+      this.$http({
+        // headers: {
+        //   "Content-Type": "application/x-www-form-urlencoded",
+        // },
+        method: "post",
+        headers:{
+          "Content-Type": "multipart/form-data",
+        },
+        url: "/uploadfile",
+        data: formData,
+      }).then((res) => {
+        console.log(res)
+      });
+      setTimeout(() => {
+        file.status = "success";
+        file.message = "上传失败";
+      }, 1000);
     },
   },
 };

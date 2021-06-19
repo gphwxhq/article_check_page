@@ -2,6 +2,8 @@ var http = require('http');
 // var querystring = require('querystring');
 // var util = require('util');
 var url = require('url')
+var multiparty = require("multiparty");
+var fs = require('fs');
 
 http.createServer(function (req, res) {
     //获取post请求中的参数
@@ -33,6 +35,17 @@ http.createServer(function (req, res) {
             res.end(JSON.stringify(dData))
         })
     }
+    else if (pathname == '/uploadfile') {
+        var form = new multiparty.Form({ uploadDir: './public/images' });
+        form.parse(req, function (err, fields, files) {
+            console.log(err, fields, files, ' fields2')
+            var inputFile = files.file[0];
+            var uploadedPath = inputFile.path;
+            var dstPath = './public/images/' + inputFile.originalFilename;
+            //重命名为真实文件名
+            fs.rename(uploadedPath, dstPath, function (err) {console.log(err ) })
+        });
+    }
     else if (pathname == '/stuPage') {
         let getstu = myURL.searchParams.get('getstu')
         //console.log(myURL.searchParams.get('getstu') ) 
@@ -43,10 +56,10 @@ http.createServer(function (req, res) {
             "Sdept": "Sdept",
             "Teacher": "Teacher"
         }
-        setTimeout(function(){
+        setTimeout(function () {
             res.writeHead(200, { 'Content-type': 'application/json' });
             res.end(JSON.stringify(data))
-        },2000)
+        }, 2000)
     }
     else if (pathname == '/stuPage/checkResult') {
         let getstu = myURL.searchParams.get('getstu')
@@ -57,7 +70,7 @@ http.createServer(function (req, res) {
             "PaperNo": "PaperNo",
             "Title": "Title",
             "Checkin": "通过",
-            "Status":"Status"
+            "Status": "Status"
         }
         res.end(JSON.stringify(data))
     }
