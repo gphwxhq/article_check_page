@@ -4,6 +4,7 @@
       v-model="searchValue"
       placeholder="请输入要搜索的人员"
       input-align="center"
+      @search="onSearch"
     />
     <!-- <div> -->
     <div class="person_button_group">
@@ -50,6 +51,7 @@ export default {
   name: "manageAllPerson",
   data() {
     return {
+      result: [],
       checked: [],
       checkAll: false,
     };
@@ -61,6 +63,10 @@ export default {
     Button,
     Checkbox,
     CheckboxGroup,
+  },
+  mounted() {
+    let storage = window.localStorage;
+    this.user = storage.getItem("user");
   },
   setup() {
     const searchValue = ref("");
@@ -74,19 +80,19 @@ export default {
       console.log(1);
       // 异步更新数据
       // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-      setTimeout(() => {
-        for (let i = 0; i < 20; i++) {
-          state.list.push(state.list.length + 1);
-        }
+      // setTimeout(() => {
+      for (let i = 0; i < 20; i++) {
+        state.list.push(state.list.length + 1);
+      }
 
-        // 加载状态结束
-        state.loading = false;
+      // 加载状态结束
+      state.loading = false;
 
-        // 数据全部加载完成
-        if (state.list.length >= 40) {
-          state.finished = true;
-        }
-      }, 1000);
+      // 数据全部加载完成
+      if (state.list.length >= 40) {
+        state.finished = true;
+      }
+      // }, 1000);
     };
 
     return {
@@ -124,6 +130,36 @@ export default {
       this.checkAll = false;
       this.onLoad();
     },
+    onSearch(key) {
+      console.log(key);
+      let self = this;
+      this.$http({
+        // headers: {
+        //   "Content-Type": "application/x-www-form-urlencoded",
+        // },
+        method: "get",
+        url: "/adminPage",
+        params: {
+          'keyWords': key,
+        },
+      })
+        .then(function (res) {
+          if (res.status == 200) {
+            console.log(res.data);
+            self.result = res.data;
+            // self.$emit("name", res.data.Sname);
+            self.isLoading = false;
+          } else {
+            self.$notify({ type: "danger", message: "网络连接错误" });
+            // self.isError = true;
+          }
+        })
+        .catch((err) => {
+          console.log("rejected", err);
+          self.$notify({ type: "danger", message: "网络连接错误" });
+          // self.isError=true
+        });
+    },
   },
 };
 </script>
@@ -136,7 +172,7 @@ export default {
 .person_button_group {
   text-align: right;
 }
-#manageAllPerson .van-button--normal{
+#manageAllPerson .van-button--normal {
   margin-left: 5px;
 }
 </style>
