@@ -71,7 +71,7 @@ export default {
       },
     };
   },
-  emits: ["name","mdSidebar"],
+  emits: ["name", "mdSidebar"],
   setup() {
     const state = reactive({
       title: "",
@@ -119,8 +119,8 @@ export default {
         }
         data["fileName"] = this.fData[1].uploader[0].file.name;
         console.log(data);
-        this.$emit("mdSidebar",2,true)
-        this.$emit("mdSidebar",1,false)
+        this.$emit("mdSidebar", 2, true);
+        this.$emit("mdSidebar", 1, false);
       }
       if (this.active < 3) this.active++;
     },
@@ -128,7 +128,7 @@ export default {
       if (this.active < 3 && this.active > index) this.active = index;
     },
     afterRead(file) {
-      let self=this
+      let self = this;
       console.log(file);
       file.status = "uploading";
       file.message = "上传中...";
@@ -143,20 +143,26 @@ export default {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        url: "/uploadfile",
+        url: "/stuPage/uploadfile",
         data: formData,
       })
         .then((res) => {
           console.log(res);
+          if (res.paperFinish) {
+            file.status = "success";
+          } else {
+            file.status = "failed";
+            file.message = "上传失败";
+          }
         })
         .catch((err) => {
           console.log("rejected", err);
           self.$notify({ type: "danger", message: "网络连接错误" });
         });
-      setTimeout(() => {
-        file.status = "success";
-        file.message = "上传失败";
-      }, 1000);
+      // setTimeout(() => {
+      //   file.status = "success";
+      //   file.message = "上传失败";
+      // }, 1000);
     },
   },
 };
