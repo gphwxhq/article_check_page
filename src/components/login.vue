@@ -69,7 +69,7 @@ export default {
       // axios.post(url,data).then(function(res){
       //   console.log(res)
       // })
-      let self=this
+      let self = this;
       this.$http({
         // headers: {
         //   "Content-Type": "application/x-www-form-urlencoded",
@@ -77,24 +77,29 @@ export default {
         method: "post",
         url: "/login",
         data: data,
-      }).then(function (res) {
-        if (res.status == 200) {
-          console.log(res.data);
-          if (res.data.LoginPass) {
-            let storage = window.localStorage;
-            storage["user"] = values.userId;
-            if (values.radio == 1) self.$router.push({ path: "/stuPage" });
-            else if (values.radio == 2)
-              self.$router.push({ path: "/teacherPage" });
-            else self.$router.push({ path: "/adminPage" });
+      })
+        .then(function (res) {
+          if (res.status == 200) {
+            console.log(res.data);
+            if (res.data.LoginPass) {
+              let storage = window.localStorage;
+              storage["user"] = values.userId;
+              if (values.radio == 1) self.$router.push({ path: "/stuPage" });
+              else if (values.radio == 2)
+                self.$router.push({ path: "/teacherPage" });
+              else self.$router.push({ path: "/adminPage" });
+            } else {
+              self.state.password = "";
+              self.$notify({ type: "danger", message: "用户名或密码错误" });
+            }
           } else {
-            self.state.password = "";
-            self.$notify({ type: "danger", message: "用户名或密码错误" });
+            self.$notify({ type: "danger", message: "网络连接错误" });
           }
-        } else {
+        })
+        .catch((err) => {
+          console.log("rejected", err);
           self.$notify({ type: "danger", message: "网络连接错误" });
-        }
-      });
+        });
 
       // if (values.userId == "1" && values.passwd == "1") {
       //   // this.$root.user = values.userId;

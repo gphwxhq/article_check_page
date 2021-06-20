@@ -1,10 +1,10 @@
 <template>
   <!-- <CellGroup title="流程"> -->
-    <Steps :active="active">
-      <Step>提交论文</Step>
-      <Step>导师审阅</Step>
-      <Step>完成</Step>
-    </Steps>
+  <Steps :active="active">
+    <Step>提交论文</Step>
+    <Step>导师审阅</Step>
+    <Step>完成</Step>
+  </Steps>
   <!-- </CellGroup> -->
   <CellGroup title="论文信息">
     <Cell
@@ -30,47 +30,50 @@ export default {
       },
     };
   },
-  emits: ["name"],
+  emits: ["name","mdSidebar"],
   components: {
     CellGroup,
     Cell,
     Steps,
     Step,
   },
-  mounted(){
+  mounted() {
     // this.$emit("name", null);
     let storage = window.localStorage;
     this.user = storage.getItem("user");
-    let self=this
-      this.$http({
-        // headers: {
-        //   "Content-Type": "application/x-www-form-urlencoded",
-        // },
-        method: "get",
-        url: "/stuPage/checkResult",
-        params: {
-          'getstu':this.user
-        }
-      }).then(function (res) {
+    let self = this;
+    this.$http({
+      // headers: {
+      //   "Content-Type": "application/x-www-form-urlencoded",
+      // },
+      method: "get",
+      url: "/stuPage/checkResult",
+      params: {
+        getstu: this.user,
+      },
+    })
+      .then(function (res) {
         if (res.status == 200) {
           console.log(res.data);
-          self.articleInfo.论文编号=res.data.PaperNo
-          self.articleInfo.标题=res.data.Title
-          self.articleInfo.审核状态=res.data.Checkin
-          self.articleInfo.审核结果=res.data.Status
-          if(res.data.Status=='通过')
-            self.active=2
-          else if(res.data.Checkin=='通过')
-            self.active=1
+          self.articleInfo.论文编号 = res.data.PaperNo;
+          self.articleInfo.标题 = res.data.Title;
+          self.articleInfo.审核状态 = res.data.Checkin;
+          self.articleInfo.审核结果 = res.data.Status;
+          if (res.data.Status == "通过"||res.data.Status == "不通过"||res.data.Checkin == "不通过") self.active = 2;
+          else if (res.data.Checkin == "通过") self.active = 1;
         } else {
           self.$notify({ type: "danger", message: "网络连接错误" });
         }
+      })
+      .catch((err) => {
+        console.log("rejected", err);
+        self.$notify({ type: "danger", message: "网络连接错误" });
       });
-  }
+  },
 };
 </script>
 <style>
-.van-cell-group__title{
-    text-align: left;
+.van-cell-group__title {
+  text-align: left;
 }
 </style>

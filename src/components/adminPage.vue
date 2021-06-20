@@ -11,7 +11,7 @@
   <mtitle user="管理端"></mtitle>
   <sideBar
     @change="handleChange"
-    :mlist="['人员管理', '论文信息管理', '系统设置']"
+    :mlist="[{'t':'人员管理','a':true}, {'t':'论文信息管理','a':true}, {'t':'系统设置','a':true}]"
   ></sideBar>
   <router-view v-slot="{ Component }">
     <transition name="van-fade">

@@ -2,7 +2,7 @@
   <mtitle user="教师端"/>
   <sideBar
     @change="handleChange"
-    :mlist="['个人信息', '学生管理', '论文评审']"
+    :mlist="[{'t':'个人信息','a':true},{'t': '学生管理','a':true},{'t': '论文评审','a':true}]"
   ></sideBar>
   <router-view v-slot="{ Component }">
     <transition name="van-fade">

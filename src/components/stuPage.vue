@@ -2,9 +2,9 @@
   <mtitle user="学生端" :userName="userName"/>
   <sideBar
     @change="handleChange"
-    :mlist="['个人信息', '提交论文', '查看结果']"
+    :mlist="sidebarList"
   ></sideBar>
-  <router-view v-slot="{ Component }" @name="setName">
+  <router-view v-slot="{ Component }" @name="setName" @mdSidebar="modifySidebar">
     <transition name="van-fade">
       <div v-show="show" class="main">
         <component :is="Component" />
@@ -22,6 +22,7 @@ export default {
       user: null,
       userName:null,
       show: false,
+      sidebarList:[{t:'个人信息',a:true},{t:'提交论文',a:true}, {t:'查看结果',a:false}]
     };
   },
   components: {
@@ -50,6 +51,9 @@ export default {
     setName(name){
       if(name!=null)
         this.userName=name;
+    },
+    modifySidebar(index,value){
+      this.sidebarList[index].a=value
     }
   }
     

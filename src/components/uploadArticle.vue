@@ -71,7 +71,7 @@ export default {
       },
     };
   },
-  emits: ["name"],
+  emits: ["name","mdSidebar"],
   setup() {
     const state = reactive({
       title: "",
@@ -119,6 +119,8 @@ export default {
         }
         data["fileName"] = this.fData[1].uploader[0].file.name;
         console.log(data);
+        this.$emit("mdSidebar",2,true)
+        this.$emit("mdSidebar",1,false)
       }
       if (this.active < 3) this.active++;
     },
@@ -126,7 +128,8 @@ export default {
       if (this.active < 3 && this.active > index) this.active = index;
     },
     afterRead(file) {
-      console.log(file)
+      let self=this
+      console.log(file);
       file.status = "uploading";
       file.message = "上传中...";
       let formData = new FormData();
@@ -137,14 +140,19 @@ export default {
         //   "Content-Type": "application/x-www-form-urlencoded",
         // },
         method: "post",
-        headers:{
+        headers: {
           "Content-Type": "multipart/form-data",
         },
         url: "/uploadfile",
         data: formData,
-      }).then((res) => {
-        console.log(res)
-      });
+      })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log("rejected", err);
+          self.$notify({ type: "danger", message: "网络连接错误" });
+        });
       setTimeout(() => {
         file.status = "success";
         file.message = "上传失败";
