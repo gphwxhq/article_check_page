@@ -67,7 +67,7 @@ http.createServer(function (req, res) {
         res.end(JSON.stringify({'paperFinish':true}))
     }
     else if (pathname == '/stuPage/init') {
-        let getstu = myURL.searchParams.get('getstu')
+        let getstu = myURL.searchParams.get('user')
         //console.log(myURL.searchParams.get('getstu') ) 
         console.log(getstu)
         let data = {
@@ -81,7 +81,7 @@ http.createServer(function (req, res) {
         }, 2000)
     }
     else if (pathname == '/stuPage') {
-        let getstu = myURL.searchParams.get('getstu')
+        let getstu = myURL.searchParams.get('user')
         //console.log(myURL.searchParams.get('getstu') ) 
         console.log(getstu)
         let data = {
@@ -96,7 +96,7 @@ http.createServer(function (req, res) {
         }, 2000)
     }
     else if (pathname == '/stuPage/checkResult') {
-        let getstu = myURL.searchParams.get('getstu')
+        let getstu = myURL.searchParams.get('user')
         //console.log(myURL.searchParams.get('getstu') ) 
         console.log(getstu)
          let data = {

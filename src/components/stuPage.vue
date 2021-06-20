@@ -46,7 +46,7 @@ export default {
       method: "get",
       url: "/stuPage/init",
       params: {
-        getstu: this.user,
+        'user': this.user,
       },
     })
       .then(function (res) {
