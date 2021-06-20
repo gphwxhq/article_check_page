@@ -53,8 +53,18 @@ export default {
         if (res.status == 200) {
           console.log(res.data);
           self.userName=res.data.userName;
-          self.sidebarList[1].a=!res.data.handIn;
-          self.sidebarList[2].a=res.data.handIn;
+          if(res.data.handIn==0){
+            self.sidebarList[1].a=true;
+            self.sidebarList[2].a=false;
+          }
+          else if(res.data.handIn==1){
+            self.sidebarList[1].a=true;
+            self.sidebarList[2].a=true;
+          }
+          else{
+            self.sidebarList[1].a=false;
+            self.sidebarList[2].a=true;
+          }
           console.log(self.sidebarList )
         } else {
           self.$notify({ type: "danger", message: "网络连接错误" });
