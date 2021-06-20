@@ -24,7 +24,7 @@
           :max-count="1"
           :preview-full-image="false"
           result-type="file"
-          accept="*"
+          accept=".pdf"
           :after-read="afterRead"
         >
           <van-button icon="plus" type="primary">上传文件</van-button>
@@ -64,6 +64,7 @@ export default {
       },
       uploadInfo: {
         title: "论文题目",
+        teacher: "指导老师",
         // author: "作者",
         // words: "关键词",
         // num: "字数",
@@ -71,10 +72,11 @@ export default {
       },
     };
   },
-  emits: ["name", "mdSidebar"],
+  emits: [ "mdSidebar"],
   setup() {
     const state = reactive({
       title: "",
+      teacher: "",
       // author: "",
       // words: "",
       // num: "",
@@ -117,12 +119,36 @@ export default {
         for (let key in this.fData[0]) {
           data[key] = this.fData[0][key];
         }
+        data["user"] = this.user;
         data["fileName"] = this.fData[1].uploader[0].file.name;
         console.log(data);
-        this.$emit("mdSidebar", 2, true);
-        this.$emit("mdSidebar", 1, false);
+        let self = this;
+        this.$http({
+          // headers: {
+          //   "Content-Type": "application/x-www-form-urlencoded",
+          // },
+          method: "post",
+          url: "/stuPage/uploadArticle",
+          data: data,
+        })
+          .then(function (res) {
+            if (res.status == 200) {
+              console.log(res.data);
+              if (res.data.receive) {
+                self.active++;
+                self.$emit("mdSidebar", 2, true);
+                self.$emit("mdSidebar", 1, false);
+              } else self.$notify({ type: "danger", message: "发生错误" });
+            } else {
+              self.$notify({ type: "danger", message: "网络连接错误" });
+            }
+          })
+          .catch((err) => {
+            console.log("rejected", err);
+            self.$notify({ type: "danger", message: "网络连接错误" });
+          });
       }
-      if (this.active < 3) this.active++;
+      if (this.active < 2) this.active++;
     },
     clickStep(index) {
       if (this.active < 3 && this.active > index) this.active = index;
@@ -148,7 +174,7 @@ export default {
       })
         .then((res) => {
           console.log(res);
-          if (res.paperFinish) {
+          if (res.data.paperFinish) {
             file.status = "success";
           } else {
             file.status = "failed";

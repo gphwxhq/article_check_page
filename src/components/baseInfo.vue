@@ -28,7 +28,7 @@ export default {
       isError: false,
     };
   },
-  emits: ["name","mdSidebar"],
+  emits: ["mdSidebar"],
   components: {
     Cell,
     CellGroup,
@@ -54,7 +54,7 @@ export default {
           self.baseInfo.学号 = res.data.Sno;
           self.baseInfo.专业 = res.data.Sdept;
           self.baseInfo.指导老师 = res.data.Teacher;
-          self.$emit("name", res.data.Sname);
+          // self.$emit("name", res.data.Sname);
           self.isLoading = false;
         } else {
           self.$notify({ type: "danger", message: "网络连接错误" });

@@ -4,7 +4,7 @@
     @change="handleChange"
     :mlist="sidebarList"
   ></sideBar>
-  <router-view v-slot="{ Component }" @name="setName" @mdSidebar="modifySidebar">
+  <router-view v-slot="{ Component }" @mdSidebar="modifySidebar">
     <transition name="van-fade">
       <div v-show="show" class="main">
         <component :is="Component" />
@@ -22,7 +22,7 @@ export default {
       user: null,
       userName:null,
       show: false,
-      sidebarList:[{t:'个人信息',a:true},{t:'提交论文',a:true}, {t:'查看结果',a:false}]
+      sidebarList:[{t:'个人信息',a:true},{t:'提交论文',a:false}, {t:'查看结果',a:false}]
     };
   },
   components: {
@@ -38,6 +38,32 @@ export default {
     console.log(this.user);
     // this.$router.push({ path: "baseInfo" });
     this.show = true;
+    let self=this
+    this.$http({
+      // headers: {
+      //   "Content-Type": "application/x-www-form-urlencoded",
+      // },
+      method: "get",
+      url: "/stuPage/init",
+      params: {
+        getstu: this.user,
+      },
+    })
+      .then(function (res) {
+        if (res.status == 200) {
+          console.log(res.data);
+          self.userName=res.data.userName;
+          self.sidebarList[1].a=!res.data.handIn;
+          self.sidebarList[2].a=res.data.handIn;
+          console.log(self.sidebarList )
+        } else {
+          self.$notify({ type: "danger", message: "网络连接错误" });
+        }
+      })
+      .catch((err) => {
+        console.log("rejected", err);
+        self.$notify({ type: "danger", message: "网络连接错误" });
+      });
   },
   methods:{
       handleChange(index) {

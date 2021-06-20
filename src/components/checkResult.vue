@@ -1,19 +1,25 @@
 <template>
   <!-- <CellGroup title="流程"> -->
-  <Steps :active="active">
-    <Step>提交论文</Step>
-    <Step>导师审阅</Step>
-    <Step>完成</Step>
-  </Steps>
-  <!-- </CellGroup> -->
-  <CellGroup title="论文信息">
-    <Cell
-      v-bind:title="key"
-      v-bind:value="val"
-      v-for="(val, key) in articleInfo"
-      :key="val"
-    />
-  </CellGroup>
+  <van-loading size="24px" vertical v-if="isLoading && !isError"
+    >加载中...</van-loading
+  >
+  <van-empty description="加载错误" v-if="isError" />
+  <template v-if="!isLoading && !isError">
+    <Steps :active="active">
+      <Step>提交论文</Step>
+      <Step>导师审阅</Step>
+      <Step>完成</Step>
+    </Steps>
+    <!-- </CellGroup> -->
+    <CellGroup title="论文信息">
+      <Cell
+        v-bind:title="key"
+        v-bind:value="val"
+        v-for="(val, key) in articleInfo"
+        :key="val"
+      />
+    </CellGroup>
+  </template>
 </template>
 <script>
 import { CellGroup, Cell, Step, Steps } from "vant";
@@ -21,6 +27,8 @@ export default {
   name: "checkResult",
   data() {
     return {
+      isLoading:true,
+      isError:false,
       active: 0,
       articleInfo: {
         论文编号: 1,
@@ -30,7 +38,7 @@ export default {
       },
     };
   },
-  emits: ["name","mdSidebar"],
+  emits: [ "mdSidebar"],
   components: {
     CellGroup,
     Cell,
@@ -54,12 +62,18 @@ export default {
     })
       .then(function (res) {
         if (res.status == 200) {
+          self.isLoading=false
           console.log(res.data);
           self.articleInfo.论文编号 = res.data.PaperNo;
           self.articleInfo.标题 = res.data.Title;
           self.articleInfo.审核状态 = res.data.Checkin;
           self.articleInfo.审核结果 = res.data.Status;
-          if (res.data.Status == "通过"||res.data.Status == "不通过"||res.data.Checkin == "不通过") self.active = 2;
+          if (
+            res.data.Status == "通过" ||
+            res.data.Status == "不通过" ||
+            res.data.Checkin == "不通过"
+          )
+            self.active = 2;
           else if (res.data.Checkin == "通过") self.active = 1;
         } else {
           self.$notify({ type: "danger", message: "网络连接错误" });
