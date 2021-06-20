@@ -8,7 +8,7 @@
     <div class="ltitle">管理端</div>
     <div class="rtitle">欢迎您,{{ user }}</div>
   </div> -->
-  <mtitle user="管理端"></mtitle>
+  <mtitle user="管理端" :userName="userName"></mtitle>
   <sideBar
     @change="handleChange"
     :mlist="[{'t':'人员管理','a':true}, {'t':'论文信息管理','a':true}, {'t':'系统设置','a':true}]"
@@ -28,6 +28,7 @@ export default {
   name: "adminPage",
   data() {
     return {
+      userName:null,
       user: null,
       show: false,
     };
@@ -41,6 +42,7 @@ export default {
     // console.log(this.$root.user);
     let storage = window.localStorage;
     this.user = storage.getItem("user");
+    this.userName=this.user
     console.log(this.user);
     // this.$router.push({ path: "baseInfo" });
     this.show = true;

@@ -21,9 +21,9 @@
       @load="onLoad"
     >
       <CheckboxGroup v-model="checked" ref="checkboxGroup">
-        <template v-for="(item, i) in state.list" :key="item">
+        <template v-for="(item, i) in state.list" :key="i">
           <!-- <div class="person_block"> -->
-          <Cell :title="item">
+          <Cell :title="item.name">
             <template #icon>
               <Checkbox :name="i" />
             </template>
@@ -51,6 +51,7 @@ export default {
   name: "manageAllPerson",
   data() {
     return {
+      page: 1,
       result: [],
       checked: [],
       checkAll: false,
@@ -75,33 +76,46 @@ export default {
       loading: false,
       finished: false,
     });
-    const onLoad = () => {
+
+    return {
+      searchValue,
+      state,
+    };
+  },
+  methods: {
+    onLoad() {
       // state.loading=true
       console.log(1);
       // 异步更新数据
       // setTimeout 仅做示例，真实场景中一般为 ajax 请求
       // setTimeout(() => {
-      for (let i = 0; i < 20; i++) {
-        state.list.push(state.list.length + 1);
+      // for (let i = 0; i < 20; i++) {
+      //   state.list.push(state.list.length + 1);
+      // }
+      if (this.result.length == 0) {
+        this.state.loading = false;
+        return;
+      }
+      if (this.result.length >= this.page * 10) {
+        for (let i = (this.page - 1) * 10; i < this.page * 10; i++)
+          this.state.list.push(this.result[i]);
+        this.page++;
+      } else {
+        for (let i = (this.page - 1) * 10; i < this.result.length; i++)
+          this.state.list.push(this.result[i]);
+        this.state.finished = true;
       }
 
       // 加载状态结束
-      state.loading = false;
+      console.log(this.state.list);
+      this.state.loading = false;
 
       // 数据全部加载完成
-      if (state.list.length >= 40) {
-        state.finished = true;
-      }
+      // if (state.list.length >= 40) {
+      //   state.finished = true;
+      // }
       // }, 1000);
-    };
-
-    return {
-      searchValue,
-      state,
-      onLoad,
-    };
-  },
-  methods: {
+    },
     onAdd() {},
     onModify(a) {
       console.log(a);
@@ -132,6 +146,7 @@ export default {
     },
     onSearch(key) {
       console.log(key);
+      this.state.loading = true;
       let self = this;
       this.$http({
         // headers: {
@@ -140,15 +155,19 @@ export default {
         method: "get",
         url: "/adminPage",
         params: {
-          'keyWords': key,
+          keyWords: key,
         },
       })
         .then(function (res) {
           if (res.status == 200) {
             console.log(res.data);
-            self.result = res.data;
+            self.result = res.data.res;
             // self.$emit("name", res.data.Sname);
-            self.isLoading = false;
+            // self.state.loading = false;
+            self.state.list = [];
+            self.state.finished = false;
+            self.page = 1;
+            self.onLoad();
           } else {
             self.$notify({ type: "danger", message: "网络连接错误" });
             // self.isError = true;
@@ -164,12 +183,16 @@ export default {
 };
 </script>
 <style>
-.van-search {
+.van-search{
   position: sticky;
   top: 43px;
   z-index: 1;
 }
 .person_button_group {
+  background: white;
+  position: sticky;
+  top: 97px;
+  z-index: 1;
   text-align: right;
 }
 #manageAllPerson .van-button--normal {

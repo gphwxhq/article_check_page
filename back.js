@@ -110,6 +110,18 @@ http.createServer(function (req, res) {
         res.end(JSON.stringify(data))
         },2000)
     }
+    else if (pathname == '/adminPage') {
+        let key = myURL.searchParams.get('keyWords')
+        //console.log(myURL.searchParams.get('getstu') ) 
+        console.log(key)
+         let data = {
+            res:[{'no':'123','name':'1'},{'no':'1234','name':'2'},{'no':'123','name':'3'},{'no':'1234','name':'4'},{'no':'123','name':'5'},{'no':'1234','name':'6'},{'no':'123','name':'7'},{'no':'1234','name':'8'},{'no':'123','name':'9'},{'no':'1234','name':'10'},{'no':'123','name':'11'},{'no':'1234','name':'12'},{'no':'123','name':'13'},{'no':'1234','name':'14'},{'no':'123','name':'15'},{'no':'1234','name':'16'},{'no':'123','name':'17'},{'no':'1234','name':'18'},{'no':'123','name':'19'},{'no':'1234','name':'20'},{'no':'123','name':'21'},{'no':'1234','name':'22'}]
+        }
+        setTimeout(function () {
+        res.writeHead(200, { 'Content-type': 'application/json' });
+        res.end(JSON.stringify(data))
+        },2000)
+    }
     else {
         res.writeHead(404, {
             'Content-Type': 'text/plain'
