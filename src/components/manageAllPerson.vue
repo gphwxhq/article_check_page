@@ -35,6 +35,77 @@
       </CheckboxGroup>
     </List>
   </div>
+  <div>
+    <Dialog
+      v-model:show="showDialog"
+      :title="dialogTitle"
+      :show-confirm-button=false
+      confirm-button-text="提交"
+    >
+      <Form @submit="onSubmit">
+        <Field name="radio" label="单选框">
+          <template #input>
+            <RadioGroup v-model="formState.roleChecked" direction="horizontal">
+              <Radio name="学生">学生</Radio>
+              <Radio name="教师">教师</Radio>
+            </RadioGroup>
+          </template>
+        </Field>
+        <Field
+          v-model="formState.no"
+          name="no"
+          label="编号"
+          placeholder="编号"
+          :rules="[{ required: true, message: '请填写编号' }]"
+        />
+        <Field
+          v-model="formState.name"
+          name="name"
+          label="姓名"
+          placeholder="姓名"
+          :rules="[{ required: true, message: '请填写姓名' }]"
+        />
+        <template v-if="formState.roleChecked=='学生'">
+          <Field
+          v-model="formState.dept"
+          name="dept"
+          label="院系"
+          placeholder="院系"
+          :rules="[{ required: true, message: '请填写院系' }]"
+        />
+        </template>
+        <template v-else>
+          <Field
+          v-model="formState.academy"
+          name="academy"
+          label="学院"
+          placeholder="学院"
+          :rules="[{ required: true, message: '请填写学院' }]"
+        />
+        <Field
+          v-model="formState.job"
+          name="job"
+          label="职务"
+          placeholder="职务"
+          :rules="[{ required: true, message: '请填写职务' }]"
+        />
+        </template>
+        
+        <Field
+          v-model="formState.password"
+          type="password"
+          name="password"
+          label="密码"
+          placeholder="密码"
+          :rules="[{ required: true, message: '请填写密码' }]"
+        />
+        <div style="margin: 16px">
+          <Button round block type="info" native-type="submit">提交</Button>
+        </div>
+      </Form>
+      <!-- <img src="https://img01.yzcdn.cn/vant/apple-3.jpg" /> -->
+    </Dialog>
+  </div>
 </template>
 <script>
 import {
@@ -45,6 +116,10 @@ import {
   Dialog,
   Checkbox,
   CheckboxGroup,
+  Form,
+  Field,
+  Radio,
+  RadioGroup
 } from "vant";
 import { ref, reactive } from "vue";
 export default {
@@ -55,6 +130,7 @@ export default {
       result: [],
       checked: [],
       checkAll: false,
+      dialogTitle: "",
     };
   },
   components: {
@@ -64,22 +140,39 @@ export default {
     Button,
     Checkbox,
     CheckboxGroup,
+    Form,
+    Field,
+    Dialog: Dialog.Component,
+    Radio,
+    RadioGroup
   },
   mounted() {
     let storage = window.localStorage;
     this.user = storage.getItem("user");
   },
   setup() {
+    const showDialog = ref(false);
     const searchValue = ref("");
     const state = reactive({
       list: [],
       loading: false,
       finished: false,
     });
-
+    const formState = reactive({
+      no: "",
+      name: "",
+      role: "",
+      job: "",
+      academy: "",
+      password: "",
+      dept: "",
+      roleChecked : ref('学生')
+    });
     return {
       searchValue,
       state,
+      showDialog,
+      formState,
     };
   },
   methods: {
@@ -116,9 +209,78 @@ export default {
       // }
       // }, 1000);
     },
-    onAdd() {},
+    onAdd() {
+      this.dialogTitle = "添加人员";
+      this.showDialog = true;
+    },
+    onSubmit(values) {
+      console.log("submit", values);
+      // let data={}
+      // if(values.radio=='学生')
+      // console.log(this.$root.user)
+      // let data = {
+      //   user: values.role
+      // };
+      // console.log(data);
+      // let self = this;
+      // this.$http({
+      //   method: "post",
+      //   url: "/login",
+      //   data: data,
+      // })
+      //   .then(function (res) {
+      //     if (res.status == 200) {
+      //       console.log(res.data);
+      //       if (res.data.LoginPass) {
+      //         let storage = window.localStorage;
+      //         storage["user"] = values.userId;
+      //         if (values.radio == 1) self.$router.push({ path: "/stuPage" });
+      //         else if (values.radio == 2)
+      //           self.$router.push({ path: "/teacherPage" });
+      //         else self.$router.push({ path: "/adminPage" });
+      //       } else {
+      //         self.state.password = "";
+      //         self.$notify({ type: "danger", message: "用户名或密码错误" });
+      //       }
+      //     } else {
+      //       self.$notify({ type: "danger", message: "网络连接错误" });
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     console.log("rejected", err);
+      //     self.$notify({ type: "danger", message: "网络连接错误" });
+      //   });
+    },
     onModify(a) {
       console.log(a);
+
+      this.$http({
+        // headers: {
+        //   "Content-Type": "application/x-www-form-urlencoded",
+        // },
+        method: "get",
+        url: "/adminPage/addPerson",
+        params: {
+          user: this.user,
+        },
+      })
+        .then(function (res) {
+          if (res.status == 200) {
+            console.log(res.data);
+            // if (res.data.role == "学生") {
+            // }
+          } else {
+            self.$notify({ type: "danger", message: "网络连接错误" });
+          }
+        })
+        .catch((err) => {
+          console.log("rejected", err);
+          self.$notify({ type: "danger", message: "网络连接错误" });
+          self.isError = true;
+        });
+
+      this.dialogTitle = "添加人员";
+      this.showDialog = true;
     },
     onDelete(item) {
       Dialog.confirm({
@@ -183,7 +345,7 @@ export default {
 };
 </script>
 <style>
-.van-search{
+.van-search {
   position: sticky;
   top: 43px;
   z-index: 1;
