@@ -219,7 +219,7 @@ export default {
       let self = this;
       this.$http({
         method: "post",
-        url: "/adminPage/addParson",
+        url: "/adminPage/addPerson",
         data: values,
       })
         .then(function (res) {
