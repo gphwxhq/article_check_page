@@ -1,5 +1,5 @@
 <template>
-  <mtitle user="教师端"/>
+  <mtitle user="教师端" :userName="userName"/>
   <sideBar
     @change="handleChange"
     :mlist="[{'t':'个人信息','a':true},{'t': '学生管理','a':true},{'t': '论文评审','a':true}]"
@@ -19,6 +19,7 @@ export default {
   name: "teacherPage",
   data() {
     return {
+      userName:null,
       user: null,
       show: false,
     };
@@ -32,9 +33,34 @@ export default {
     // console.log(this.$root.user);
     let storage = window.localStorage;
     this.user = storage.getItem("user");
+    this.userName=this.user
     console.log(this.user);
     // this.$router.push({ path: "baseInfo" });
     this.show = true;
+
+    let self=this
+    this.$http({
+      // headers: {
+      //   "Content-Type": "application/x-www-form-urlencoded",
+      // },
+      method: "get",
+      url: "/teacherPage/init",
+      params: {
+        'user': this.user,
+      },
+    })
+      .then(function (res) {
+        if (res.status == 200) {
+          console.log(res.data);
+          self.userName=res.data.userName;
+        } else {
+          self.$notify({ type: "danger", message: "网络连接错误" });
+        }
+      })
+      .catch((err) => {
+        console.log("rejected", err);
+        self.$notify({ type: "danger", message: "网络连接错误" });
+      });
   },
   methods:{
       handleChange(index) {

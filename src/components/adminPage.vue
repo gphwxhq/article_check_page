@@ -46,6 +46,29 @@ export default {
     console.log(this.user);
     // this.$router.push({ path: "baseInfo" });
     this.show = true;
+    let self=this
+    this.$http({
+      // headers: {
+      //   "Content-Type": "application/x-www-form-urlencoded",
+      // },
+      method: "get",
+      url: "/adminPage/init",
+      params: {
+        'user': this.user,
+      },
+    })
+      .then(function (res) {
+        if (res.status == 200) {
+          console.log(res.data);
+          self.userName=res.data.userName;
+        } else {
+          self.$notify({ type: "danger", message: "网络连接错误" });
+        }
+      })
+      .catch((err) => {
+        console.log("rejected", err);
+        self.$notify({ type: "danger", message: "网络连接错误" });
+      });
   },
   methods:{
       handleChange(index) {
