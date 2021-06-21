@@ -28,7 +28,7 @@
               <Checkbox :name="i" />
             </template>
             <Button type="primary" @click="onModify(i)">修改</Button>
-            <Button type="danger" @click="onDelete([i])">删除</Button>
+            <Button type="danger" @click="onDelete(i, item)">删除</Button>
           </Cell>
           <!-- </div> -->
         </template>
@@ -239,7 +239,7 @@ export default {
           self.$notify({ type: "danger", message: "网络连接错误" });
         });
     },
-    cancelSubmit(){
+    cancelSubmit() {
       this.showDialog = false;
     },
     onModify(a) {
@@ -267,19 +267,45 @@ export default {
         .catch((err) => {
           console.log("rejected", err);
           self.$notify({ type: "danger", message: "网络连接错误" });
-          self.isError = true;
+          // self.isError = true;
         });
 
       this.dialogTitle = "添加人员";
       this.showDialog = true;
     },
-    onDelete(item) {
+    onDelete(index, item) {
+      console.log(index, item);
       Dialog.confirm({
         title: "删除确认",
-        message: "弹窗内容",
+        message: "确认要删除" + item.name + "吗？",
       })
         .then(() => {
-          this.state.list.splice(item, 1);
+          this.$http({
+            // headers: {
+            //   "Content-Type": "application/x-www-form-urlencoded",
+            // },
+            method: "get",
+            url: "/adminPage/deletePerson",
+            params: {
+              user: [item.no],
+            },
+          })
+            .then(function (res) {
+              if (res.status == 200) {
+                console.log(res.data);
+                if (res.data.success) {
+                  self.$notify({ type: "success", message: "删除成功" });
+                  this.state.list.splice(index, 1);
+                }
+              } else {
+                self.$notify({ type: "danger", message: "网络连接错误" });
+              }
+            })
+            .catch((err) => {
+              console.log("rejected", err);
+              self.$notify({ type: "danger", message: "网络连接错误" });
+              // self.isError = true;
+            });
         })
         .catch(() => {
           // on cancel
@@ -290,12 +316,48 @@ export default {
       this.checkAll = !this.checkAll;
     },
     deleteSelect() {
-      for (let i = this.checked.length - 1; i >= 0; i--) {
-        this.state.list.splice(this.checked[i], 1);
+      let noList = [];
+      for (let i in this.checked) {
+        noList.push(this.state.list[i].no);
       }
-      this.$refs.checkboxGroup.toggleAll(false);
-      this.checkAll = false;
-      this.onLoad();
+      console.log(noList);
+      Dialog.confirm({
+        title: "删除确认",
+        message: "确认要删除这些人员吗",
+      })
+        .then(() => {
+          this.$http({
+            method: "get",
+            url: "/adminPage/deletePerson",
+            params: {
+              user: noList,
+            },
+          })
+            .then(function (res) {
+              if (res.status == 200) {
+                console.log(res.data);
+                if (res.data.success) {
+                  self.$notify({ type: "success", message: "删除成功" });
+                  for (let i = this.checked.length - 1; i >= 0; i--) {
+                    this.state.list.splice(this.checked[i], 1);
+                  }
+                  this.$refs.checkboxGroup.toggleAll(false);
+                  this.checkAll = false;
+                  // this.onLoad();
+                }
+              } else {
+                self.$notify({ type: "danger", message: "网络连接错误" });
+              }
+            })
+            .catch((err) => {
+              console.log("rejected", err);
+              self.$notify({ type: "danger", message: "网络连接错误" });
+              // self.isError = true;
+            });
+        })
+        .catch(() => {
+          // on cancel
+        });
     },
     onSearch(key) {
       console.log(key);
