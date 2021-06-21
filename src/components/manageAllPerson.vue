@@ -35,47 +35,47 @@
       </CheckboxGroup>
     </List>
   </div>
-  <div>
-    <Dialog
-      v-model:show="showDialog"
-      :title="dialogTitle"
-      :show-confirm-button=false
-      confirm-button-text="提交"
-    >
-      <Form @submit="onSubmit">
-        <Field name="radio" label="单选框">
-          <template #input>
-            <RadioGroup v-model="formState.roleChecked" direction="horizontal">
-              <Radio name="学生">学生</Radio>
-              <Radio name="教师">教师</Radio>
-            </RadioGroup>
-          </template>
-        </Field>
+
+  <Dialog
+    v-model:show="showDialog"
+    :title="dialogTitle"
+    :show-confirm-button="false"
+    confirm-button-text="提交"
+  >
+    <Form @submit="onSubmit">
+      <Field name="role" label="单选框">
+        <template #input>
+          <RadioGroup v-model="formState.roleChecked" direction="horizontal">
+            <Radio name="学生">学生</Radio>
+            <Radio name="教师">教师</Radio>
+          </RadioGroup>
+        </template>
+      </Field>
+      <Field
+        v-model="formState.no"
+        name="no"
+        label="编号"
+        placeholder="编号"
+        :rules="[{ required: true, message: '请填写编号' }]"
+      />
+      <Field
+        v-model="formState.name"
+        name="name"
+        label="姓名"
+        placeholder="姓名"
+        :rules="[{ required: true, message: '请填写姓名' }]"
+      />
+      <template v-if="formState.roleChecked == '学生'">
         <Field
-          v-model="formState.no"
-          name="no"
-          label="编号"
-          placeholder="编号"
-          :rules="[{ required: true, message: '请填写编号' }]"
-        />
-        <Field
-          v-model="formState.name"
-          name="name"
-          label="姓名"
-          placeholder="姓名"
-          :rules="[{ required: true, message: '请填写姓名' }]"
-        />
-        <template v-if="formState.roleChecked=='学生'">
-          <Field
           v-model="formState.dept"
           name="dept"
           label="院系"
           placeholder="院系"
           :rules="[{ required: true, message: '请填写院系' }]"
         />
-        </template>
-        <template v-else>
-          <Field
+      </template>
+      <template v-else>
+        <Field
           v-model="formState.academy"
           name="academy"
           label="学院"
@@ -89,23 +89,23 @@
           placeholder="职务"
           :rules="[{ required: true, message: '请填写职务' }]"
         />
-        </template>
-        
-        <Field
-          v-model="formState.password"
-          type="password"
-          name="password"
-          label="密码"
-          placeholder="密码"
-          :rules="[{ required: true, message: '请填写密码' }]"
-        />
-        <div style="margin: 16px">
-          <Button round block type="info" native-type="submit">提交</Button>
-        </div>
-      </Form>
-      <!-- <img src="https://img01.yzcdn.cn/vant/apple-3.jpg" /> -->
-    </Dialog>
-  </div>
+      </template>
+
+      <Field
+        v-model="formState.password"
+        type="password"
+        name="password"
+        label="密码"
+        placeholder="密码"
+        :rules="[{ required: true, message: '请填写密码' }]"
+      />
+      <div style="margin: 16px">
+        <Button round block type="success" native-type="submit">提交</Button>
+        <Button round block type="danger" @click="cancelSubmit">取消</Button>
+      </div>
+    </Form>
+    <!-- <img src="https://img01.yzcdn.cn/vant/apple-3.jpg" /> -->
+  </Dialog>
 </template>
 <script>
 import {
@@ -119,7 +119,7 @@ import {
   Form,
   Field,
   Radio,
-  RadioGroup
+  RadioGroup,
 } from "vant";
 import { ref, reactive } from "vue";
 export default {
@@ -144,7 +144,7 @@ export default {
     Field,
     Dialog: Dialog.Component,
     Radio,
-    RadioGroup
+    RadioGroup,
   },
   mounted() {
     let storage = window.localStorage;
@@ -166,7 +166,7 @@ export default {
       academy: "",
       password: "",
       dept: "",
-      roleChecked : ref('学生')
+      roleChecked: ref("学生"),
     });
     return {
       searchValue,
@@ -215,41 +215,32 @@ export default {
     },
     onSubmit(values) {
       console.log("submit", values);
-      // let data={}
-      // if(values.radio=='学生')
-      // console.log(this.$root.user)
-      // let data = {
-      //   user: values.role
-      // };
-      // console.log(data);
-      // let self = this;
-      // this.$http({
-      //   method: "post",
-      //   url: "/login",
-      //   data: data,
-      // })
-      //   .then(function (res) {
-      //     if (res.status == 200) {
-      //       console.log(res.data);
-      //       if (res.data.LoginPass) {
-      //         let storage = window.localStorage;
-      //         storage["user"] = values.userId;
-      //         if (values.radio == 1) self.$router.push({ path: "/stuPage" });
-      //         else if (values.radio == 2)
-      //           self.$router.push({ path: "/teacherPage" });
-      //         else self.$router.push({ path: "/adminPage" });
-      //       } else {
-      //         self.state.password = "";
-      //         self.$notify({ type: "danger", message: "用户名或密码错误" });
-      //       }
-      //     } else {
-      //       self.$notify({ type: "danger", message: "网络连接错误" });
-      //     }
-      //   })
-      //   .catch((err) => {
-      //     console.log("rejected", err);
-      //     self.$notify({ type: "danger", message: "网络连接错误" });
-      //   });
+
+      let self = this;
+      this.$http({
+        method: "post",
+        url: "/adminPage/addParson",
+        data: values,
+      })
+        .then(function (res) {
+          if (res.status == 200) {
+            console.log(res.data);
+            if (res.data.success) {
+              self.$notify({ type: "success", message: "添加成功" });
+            } else {
+              self.$notify({ type: "danger", message: "网络连接错误" });
+            }
+          } else {
+            self.$notify({ type: "danger", message: "网络连接错误" });
+          }
+        })
+        .catch((err) => {
+          console.log("rejected", err);
+          self.$notify({ type: "danger", message: "网络连接错误" });
+        });
+    },
+    cancelSubmit(){
+      this.showDialog = false;
     },
     onModify(a) {
       console.log(a);
