@@ -305,9 +305,9 @@ export default {
             // headers: {
             //   "Content-Type": "application/x-www-form-urlencoded",
             // },
-            method: "get",
+            method: "post",
             url: "/adminPage/deletePerson",
-            params: {
+            data: {
               user: [item.no],
             },
           })
@@ -351,9 +351,9 @@ export default {
         .then(() => {
           let self = this;
           this.$http({
-            method: "get",
+            method: "post",
             url: "/adminPage/deletePerson",
-            params: {
+            data: {
               user: noList,
             },
           })
