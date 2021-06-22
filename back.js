@@ -135,6 +135,22 @@ http.createServer(function (req, res) {
             res.end(JSON.stringify(data))
         }, 2000)
     }
+    else if (pathname=='/adminPage/modifyPerson'){
+        let getstu = myURL.searchParams.get('user')
+        //console.log(myURL.searchParams.get('getstu') ) 
+        console.log(getstu)
+        let data = {
+            "userNO":'123',
+            "userName":"阿巴",
+            "password":'123',
+            "role":"教师"
+        }
+        console.log(data)
+        setTimeout(function () {
+            res.writeHead(200, { 'Content-type': 'application/json' });
+            res.end(JSON.stringify(data))
+        }, 2000)
+    }
     else if (pathname=='/teacherPage/init'){
         let getstu = myURL.searchParams.get('user')
         //console.log(myURL.searchParams.get('getstu') ) 

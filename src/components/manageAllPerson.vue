@@ -8,11 +8,11 @@
     />
     <!-- <div> -->
     <div class="person_button_group">
-      <Button type="primary" @click="onAdd">添加</Button>
-      <Button type="primary" @click="selectAll">{{
+      <Button type="primary" plain @click="onAdd">添加</Button>
+      <Button type="primary" plain @click="selectAll">{{
         checkAll ? "取消全选" : "全选"
       }}</Button>
-      <Button type="danger" @click="deleteSelect">删除</Button>
+      <Button type="danger" plain @click="deleteSelect">删除</Button>
     </div>
     <List
       v-model:loading="state.loading"
@@ -20,6 +20,8 @@
       finished-text="没有更多了"
       @load="onLoad"
     >
+    <Empty v-if="isEmpty" description="无内容" />
+    <template v-if="!isEmpty">
       <CheckboxGroup v-model="checked" ref="checkboxGroup">
         <template v-for="(item, i) in state.list" :key="i">
           <!-- <div class="person_block"> -->
@@ -27,12 +29,13 @@
             <template #icon>
               <Checkbox :name="i" />
             </template>
-            <Button type="primary" @click="onModify(i)">修改</Button>
+            <Button type="primary" @click="onModify(item)">修改</Button>
             <Button type="danger" @click="onDelete(i, item)">删除</Button>
           </Cell>
           <!-- </div> -->
         </template>
       </CheckboxGroup>
+    </template>
     </List>
   </div>
 
@@ -101,11 +104,20 @@
       />
       <div style="margin: 16px">
         <Button round block type="success" native-type="submit">提交</Button>
-        <Button round block type="danger" @click="cancelSubmit">取消</Button>
+        <Button round block type="danger" @click="showDialog = false"
+          >取消</Button
+        >
       </div>
     </Form>
     <!-- <img src="https://img01.yzcdn.cn/vant/apple-3.jpg" /> -->
   </Dialog>
+  <Overlay :show="showOverlay">
+    <div class="overlayWraper">
+      <div>
+        <Loading color="#1989fa" size="50px" vertical>加载中</Loading>
+      </div>
+    </div>
+  </Overlay>
 </template>
 <script>
 import {
@@ -120,6 +132,9 @@ import {
   Field,
   Radio,
   RadioGroup,
+  Overlay,
+  Loading,
+  Empty,
 } from "vant";
 import { ref, reactive } from "vue";
 export default {
@@ -131,6 +146,7 @@ export default {
       checked: [],
       checkAll: false,
       dialogTitle: "",
+      isEmpty: false,
     };
   },
   components: {
@@ -145,12 +161,16 @@ export default {
     Dialog: Dialog.Component,
     Radio,
     RadioGroup,
+    Overlay,
+    Loading,
+    Empty,
   },
   mounted() {
     let storage = window.localStorage;
     this.user = storage.getItem("user");
   },
   setup() {
+    const showOverlay = ref(false);
     const showDialog = ref(false);
     const searchValue = ref("");
     const state = reactive({
@@ -173,6 +193,7 @@ export default {
       state,
       showDialog,
       formState,
+      showOverlay,
     };
   },
   methods: {
@@ -187,8 +208,10 @@ export default {
       // }
       if (this.result.length == 0) {
         this.state.loading = false;
+        this.isEmpty=true
         return;
       }
+      this.isEmpty=false
       if (this.result.length >= this.page * 10) {
         for (let i = (this.page - 1) * 10; i < this.page * 10; i++)
           this.state.list.push(this.result[i]);
@@ -215,7 +238,6 @@ export default {
     },
     onSubmit(values) {
       console.log("submit", values);
-
       let self = this;
       this.$http({
         method: "post",
@@ -239,27 +261,28 @@ export default {
           self.$notify({ type: "danger", message: "网络连接错误" });
         });
     },
-    cancelSubmit() {
-      this.showDialog = false;
-    },
-    onModify(a) {
-      console.log(a);
-
+    onModify(item) {
+      console.log(item);
+      this.showOverlay = true;
+      let self = this;
       this.$http({
-        // headers: {
-        //   "Content-Type": "application/x-www-form-urlencoded",
-        // },
         method: "get",
-        url: "/adminPage/addPerson",
+        url: "/adminPage/modifyPerson",
         params: {
-          user: this.user,
+          user: item.no,
         },
       })
         .then(function (res) {
           if (res.status == 200) {
             console.log(res.data);
-            // if (res.data.role == "学生") {
-            // }
+            self.formState.no = res.data.userNO;
+            self.formState.name = res.data.userName;
+            self.formState.password = res.data.password;
+            self.formState.roleChecked = res.data.role;
+
+            self.dialogTitle = item.name;
+            self.showOverlay = false;
+            self.showDialog = true;
           } else {
             self.$notify({ type: "danger", message: "网络连接错误" });
           }
@@ -269,9 +292,6 @@ export default {
           self.$notify({ type: "danger", message: "网络连接错误" });
           // self.isError = true;
         });
-
-      this.dialogTitle = "添加人员";
-      this.showDialog = true;
     },
     onDelete(index, item) {
       console.log(index, item);
@@ -280,6 +300,7 @@ export default {
         message: "确认要删除" + item.name + "吗？",
       })
         .then(() => {
+          let self = this;
           this.$http({
             // headers: {
             //   "Content-Type": "application/x-www-form-urlencoded",
@@ -295,7 +316,7 @@ export default {
                 console.log(res.data);
                 if (res.data.success) {
                   self.$notify({ type: "success", message: "删除成功" });
-                  this.state.list.splice(index, 1);
+                  self.state.list.splice(index, 1);
                 }
               } else {
                 self.$notify({ type: "danger", message: "网络连接错误" });
@@ -312,6 +333,8 @@ export default {
         });
     },
     selectAll() {
+      if (this.$refs.checkboxGroup==null)
+        return
       this.$refs.checkboxGroup.toggleAll(!this.checkAll);
       this.checkAll = !this.checkAll;
     },
@@ -326,6 +349,7 @@ export default {
         message: "确认要删除这些人员吗",
       })
         .then(() => {
+          let self = this;
           this.$http({
             method: "get",
             url: "/adminPage/deletePerson",
@@ -339,10 +363,10 @@ export default {
                 if (res.data.success) {
                   self.$notify({ type: "success", message: "删除成功" });
                   for (let i = this.checked.length - 1; i >= 0; i--) {
-                    this.state.list.splice(this.checked[i], 1);
+                    self.state.list.splice(this.checked[i], 1);
                   }
-                  this.$refs.checkboxGroup.toggleAll(false);
-                  this.checkAll = false;
+                  self.$refs.checkboxGroup.toggleAll(false);
+                  self.checkAll = false;
                   // this.onLoad();
                 }
               } else {
@@ -361,6 +385,7 @@ export default {
     },
     onSearch(key) {
       console.log(key);
+      this.isEmpty=false
       this.state.loading = true;
       let self = this;
       this.$http({
@@ -398,6 +423,19 @@ export default {
 };
 </script>
 <style>
+.overlayWraper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.overlayWraper div {
+  display: flex;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  background-color: #fff;
+}
 .van-search {
   position: sticky;
   top: 43px;
