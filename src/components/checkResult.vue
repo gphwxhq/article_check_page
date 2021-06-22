@@ -11,18 +11,18 @@
       <Step>完成</Step>
     </Steps>
     <!-- </CellGroup> -->
-    <CellGroup title="论文信息">
-      <Cell
+    <van-cell-group title="论文信息">
+      <van-cell
         v-bind:title="key"
         v-bind:value="val"
         v-for="(val, key) in articleInfo"
         :key="val"
       />
-    </CellGroup>
+    </van-cell-group>
   </template>
 </template>
 <script>
-import { CellGroup, Cell, Step, Steps } from "vant";
+import { Step, Steps } from "vant";
 export default {
   name: "checkResult",
   data() {
@@ -40,8 +40,6 @@ export default {
   },
   emits: [ "mdSidebar"],
   components: {
-    CellGroup,
-    Cell,
     Steps,
     Step,
   },

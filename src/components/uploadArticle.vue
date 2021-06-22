@@ -33,10 +33,10 @@
     </van-field>
     <template v-if="active == 2">
       <div class="letter">{{ letter }}</div>
-      <Checkbox v-model="checked">我已阅读承诺书并同意相关条款</Checkbox>
+      <van-checkbox v-model="checked">我已阅读承诺书并同意相关条款</van-checkbox>
     </template>
     <template v-if="active == 3">
-      <van-icon name="passed" color="green" size="100" />
+      <Icon name="passed" color="green" size="100" />
       <div>提交成功</div>
     </template>
     <van-button v-if="active < 3" type="success" native-type="submit">{{
@@ -46,7 +46,7 @@
 </template>
 <script>
 import { reactive, ref } from "vue";
-import { uploader, Step, Steps, Checkbox } from "vant";
+import { uploader, Step, Steps,Icon} from "vant";
 export default {
   name: "uploadArticle",
   data() {
@@ -93,7 +93,7 @@ export default {
     uploader,
     Step,
     Steps,
-    Checkbox,
+    Icon
   },
   mounted() {
     let storage = window.localStorage;

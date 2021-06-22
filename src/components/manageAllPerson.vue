@@ -8,11 +8,11 @@
     />
     <!-- <div> -->
     <div class="person_button_group">
-      <Button type="primary" plain @click="onAdd">添加</Button>
-      <Button type="primary" plain @click="selectAll">{{
+      <van-button type="primary" plain @click="onAdd">添加</van-button>
+      <van-button type="primary" plain @click="selectAll">{{
         checkAll ? "取消全选" : "全选"
-      }}</Button>
-      <Button type="danger" plain @click="deleteSelect">删除</Button>
+      }}</van-button>
+      <van-button type="danger" plain @click="deleteSelect">删除</van-button>
     </div>
     <List
       v-model:loading="state.loading"
@@ -20,21 +20,21 @@
       finished-text="没有更多了"
       @load="onLoad"
     >
-    <Empty v-if="isEmpty" description="无内容" />
+    <van-empty v-if="isEmpty" description="无内容" />
     <template v-if="!isEmpty">
-      <CheckboxGroup v-model="checked" ref="checkboxGroup">
+      <van-checkbox-group v-model="checked" ref="checkboxGroup">
         <template v-for="(item, i) in state.list" :key="i">
           <!-- <div class="person_block"> -->
-          <Cell :title="item.name">
+          <van-cell :title="item.name">
             <template #icon>
-              <Checkbox :name="i" />
+              <van-checkbox :name="i" />
             </template>
-            <Button type="primary" @click="onModify(item)">修改</Button>
-            <Button type="danger" @click="onDelete(i, item)">删除</Button>
-          </Cell>
+            <van-button type="primary" @click="onModify(item)">修改</van-button>
+            <van-button type="danger" @click="onDelete(i, item)">删除</van-button>
+          </van-cell>
           <!-- </div> -->
         </template>
-      </CheckboxGroup>
+      </van-checkbox-group>
     </template>
     </List>
   </div>
@@ -45,23 +45,23 @@
     :show-confirm-button="false"
     confirm-button-text="提交"
   >
-    <Form @submit="onSubmit">
-      <Field name="role" label="单选框">
+    <van-form @submit="onSubmit">
+      <van-field name="role" label="单选框">
         <template #input>
-          <RadioGroup v-model="formState.roleChecked" direction="horizontal">
-            <Radio name="学生">学生</Radio>
-            <Radio name="教师">教师</Radio>
-          </RadioGroup>
+          <van-radio-group v-model="formState.roleChecked" direction="horizontal">
+            <van-radio name="学生">学生</van-radio>
+            <van-radio name="教师">教师</van-radio>
+          </van-radio-group>
         </template>
-      </Field>
-      <Field
+      </van-field>
+      <van-field
         v-model="formState.no"
         name="no"
         label="编号"
         placeholder="编号"
         :rules="[{ required: true, message: '请填写编号' }]"
       />
-      <Field
+      <van-field
         v-model="formState.name"
         name="name"
         label="姓名"
@@ -69,7 +69,7 @@
         :rules="[{ required: true, message: '请填写姓名' }]"
       />
       <template v-if="formState.roleChecked == '学生'">
-        <Field
+        <van-field
           v-model="formState.dept"
           name="dept"
           label="院系"
@@ -78,14 +78,14 @@
         />
       </template>
       <template v-else>
-        <Field
+        <van-field
           v-model="formState.academy"
           name="academy"
           label="学院"
           placeholder="学院"
           :rules="[{ required: true, message: '请填写学院' }]"
         />
-        <Field
+        <van-field
           v-model="formState.job"
           name="job"
           label="职务"
@@ -94,7 +94,7 @@
         />
       </template>
 
-      <Field
+      <van-field
         v-model="formState.password"
         type="password"
         name="password"
@@ -103,39 +103,22 @@
         :rules="[{ required: true, message: '请填写密码' }]"
       />
       <div style="margin: 16px">
-        <Button round block type="success" native-type="submit">提交</Button>
-        <Button round block type="danger" @click="showDialog = false"
-          >取消</Button
-        >
+        <van-button round block type="success" native-type="submit">提交</van-button>
+        <van-button round block type="danger" @click="showDialog = false"
+          >取消</van-button>
       </div>
-    </Form>
+    </van-form>
     <!-- <img src="https://img01.yzcdn.cn/vant/apple-3.jpg" /> -->
   </Dialog>
-  <Overlay :show="showOverlay">
-    <div class="overlayWraper">
-      <div>
-        <Loading color="#1989fa" size="50px" vertical>加载中</Loading>
-      </div>
-    </div>
-  </Overlay>
+  <loading-overlay :show="showOverlay"/>
 </template>
 <script>
 import {
   Search,
   List,
-  Cell,
-  Button,
-  Dialog,
-  Checkbox,
-  CheckboxGroup,
-  Form,
-  Field,
-  Radio,
-  RadioGroup,
-  Overlay,
-  Loading,
-  Empty,
+  Dialog
 } from "vant";
+import loadingOverlay from "./loadingOverlay.vue"
 import { ref, reactive } from "vue";
 export default {
   name: "manageAllPerson",
@@ -152,18 +135,8 @@ export default {
   components: {
     Search,
     List,
-    Cell,
-    Button,
-    Checkbox,
-    CheckboxGroup,
-    Form,
-    Field,
     Dialog: Dialog.Component,
-    Radio,
-    RadioGroup,
-    Overlay,
-    Loading,
-    Empty,
+    loadingOverlay
   },
   mounted() {
     let storage = window.localStorage;
@@ -339,6 +312,8 @@ export default {
       this.checkAll = !this.checkAll;
     },
     deleteSelect() {
+      if(this.checked.length==0)
+      return
       let noList = [];
       for (let i in this.checked) {
         noList.push(this.state.list[i].no);
@@ -356,14 +331,15 @@ export default {
             data: {
               user: noList,
             },
+
           })
             .then(function (res) {
               if (res.status == 200) {
                 console.log(res.data);
                 if (res.data.success) {
                   self.$notify({ type: "success", message: "删除成功" });
-                  for (let i = this.checked.length - 1; i >= 0; i--) {
-                    self.state.list.splice(this.checked[i], 1);
+                  for (let i = self.checked.length - 1; i >= 0; i--) {
+                    self.state.list.splice(self.checked[i], 1);
                   }
                   self.$refs.checkboxGroup.toggleAll(false);
                   self.checkAll = false;

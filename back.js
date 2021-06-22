@@ -151,6 +151,21 @@ http.createServer(function (req, res) {
             res.end(JSON.stringify(data))
         }, 2000)
     }
+    else if (pathname=="/adminPage/deletePerson"){
+        let data = []
+        req.on('data', chunk => {
+            data.push(chunk)  // 将接收到的数据暂时保存起来
+        })
+        req.on('end', () => {
+            data = JSON.parse(data)
+            console.log(data) // 数据传输完，打印数据的内容
+            let dData = {
+                'success': true
+            }
+            res.writeHead(200, { 'Content-type': 'application/json' });
+            res.end(JSON.stringify(dData))
+        })
+    }
     else if (pathname=='/teacherPage/init'){
         let getstu = myURL.searchParams.get('user')
         //console.log(myURL.searchParams.get('getstu') ) 

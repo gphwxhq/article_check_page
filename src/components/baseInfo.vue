@@ -3,17 +3,17 @@
     >加载中...</van-loading
   >
   <van-empty description="加载错误" v-if="isError" />
-  <CellGroup title="基础信息" v-if="!isLoading && !isError">
-    <Cell
+  <van-cell-group title="基础信息" v-if="!isLoading && !isError">
+    <van-cell
       v-bind:title="key"
       v-bind:value="val"
       v-for="(val, key) in baseInfo"
       :key="val"
     />
-  </CellGroup>
+  </van-cell-group>
 </template>
 <script>
-import { CellGroup, Cell } from "vant";
+// import { CellGroup, Cell } from "vant";
 export default {
   name: "stuPage",
   data() {
@@ -30,8 +30,7 @@ export default {
   },
   emits: ["mdSidebar"],
   components: {
-    Cell,
-    CellGroup,
+
   },
   mounted() {
     let storage = window.localStorage;
