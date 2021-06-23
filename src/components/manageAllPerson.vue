@@ -59,7 +59,7 @@
         name="no"
         label="编号"
         placeholder="编号"
-        :rules="[{ required: true, message: '请填写编号' }]"
+        :rules="[{required: true, message: '请填写编号' },{ validator,message:formState.roleChecked == '学生'?'请输入6位数字':'请输入8位数字' }]"
       />
       <van-field
         v-model="formState.name"
@@ -145,6 +145,7 @@ export default {
     this.user = storage.getItem("user");
   },
   setup() {
+    const validator = (val) => formState.roleChecked == '学生'?/^\d{6}$/.test(val):/^\d{8}$/.test(val)
     const showOverlay = ref(false);
     const showDialog = ref(false);
     const searchValue = ref("");
@@ -164,6 +165,7 @@ export default {
       roleChecked: ref("学生"),
     });
     return {
+      validator,
       searchValue,
       state,
       showDialog,

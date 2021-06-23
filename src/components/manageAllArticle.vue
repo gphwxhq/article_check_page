@@ -91,14 +91,14 @@
           name="sno"
           label="学号"
           placeholder="学号"
-          :rules="[{ required: true, message: '请填写学号' }]"
+          :rules="[{ required: true, message: '请填写学号' },{ pattern:/^\d{6}$/, message: '请输入6位数字' }]"
         />
         <van-field
           v-model="formState.tno"
           name="tno"
           label="教师编号"
           placeholder="教师编号"
-          :rules="[{ required: true, message: '请填写教师编号' }]"
+          :rules="[{ required: true, message: '请填写教师编号' },{ pattern:/^\d{8}$/, message: '请输入8位数字' }]"
         />
       </template>
       <div style="margin: 16px">
