@@ -2,7 +2,7 @@
   <div id="manageAllArticle">
     <Search
       v-model="searchValue"
-      placeholder="请输入要搜索的人员"
+      placeholder="请输入要搜索的标题"
       input-align="center"
       @search="onSearch"
     />
@@ -20,22 +20,26 @@
       finished-text="没有更多了"
       @load="onLoad"
     >
-    <van-empty v-if="isEmpty" description="无内容" />
-    <template v-if="!isEmpty">
-      <van-checkbox-group v-model="checked" ref="checkboxGroup">
-        <template v-for="(item, i) in state.list" :key="i">
-          <!-- <div class="person_block"> -->
-          <van-cell :title="item.name">
-            <template #icon>
-              <van-checkbox :name="i" />
-            </template>
-            <van-button type="primary" @click="onModify(item)">修改</van-button>
-            <van-button type="danger" @click="onDelete(i, item)">删除</van-button>
-          </van-cell>
-          <!-- </div> -->
-        </template>
-      </van-checkbox-group>
-    </template>
+      <van-empty v-if="isEmpty" description="无内容" />
+      <template v-if="!isEmpty">
+        <van-checkbox-group v-model="checked" ref="checkboxGroup">
+          <template v-for="(item, i) in state.list" :key="i">
+            <!-- <div class="person_block"> -->
+            <van-cell :title="item.name">
+              <template #icon>
+                <van-checkbox :name="i" />
+              </template>
+              <van-button type="primary" @click="onModify(item)"
+                >修改</van-button
+              >
+              <van-button type="danger" @click="onDelete(i, item)"
+                >删除</van-button
+              >
+            </van-cell>
+            <!-- </div> -->
+          </template>
+        </van-checkbox-group>
+      </template>
     </List>
   </div>
 
@@ -46,84 +50,80 @@
     confirm-button-text="提交"
   >
     <van-form @submit="onSubmit">
-      <van-field name="role" label="单选框">
-        <template #input>
-          <van-radio-group v-model="formState.roleChecked" direction="horizontal">
-            <van-radio name="学生">学生</van-radio>
-            <van-radio name="教师">教师</van-radio>
-          </van-radio-group>
-        </template>
-      </van-field>
       <van-field
-        v-model="formState.no"
+        v-model="formState.paperNo"
         name="no"
         label="编号"
         placeholder="编号"
         :rules="[{ required: true, message: '请填写编号' }]"
       />
       <van-field
-        v-model="formState.name"
-        name="name"
-        label="姓名"
-        placeholder="姓名"
-        :rules="[{ required: true, message: '请填写姓名' }]"
+        v-model="formState.title"
+        name="title"
+        label="标题"
+        placeholder="标题"
+        :rules="[{ required: true, message: '请填写标题' }]"
       />
-      <template v-if="formState.roleChecked == '学生'">
-        <van-field
-          v-model="formState.dept"
-          name="dept"
-          label="院系"
-          placeholder="院系"
-          :rules="[{ required: true, message: '请填写院系' }]"
-        />
-      </template>
-      <template v-else>
-        <van-field
-          v-model="formState.academy"
-          name="academy"
-          label="学院"
-          placeholder="学院"
-          :rules="[{ required: true, message: '请填写学院' }]"
-        />
-        <van-field
-          v-model="formState.job"
-          name="job"
-          label="职务"
-          placeholder="职务"
-          :rules="[{ required: true, message: '请填写职务' }]"
-        />
-      </template>
-
       <van-field
-        v-model="formState.password"
-        type="password"
-        name="password"
-        label="密码"
-        placeholder="密码"
-        :rules="[{ required: true, message: '请填写密码' }]"
+        v-model="formState.num"
+        name="num"
+        label="字数"
+        placeholder="字数"
+        :rules="[{ required: true, message: '请填写字数' }]"
       />
+      <van-field
+        v-model="formState.summary"
+        name="summary"
+        label="摘要"
+        placeholder="摘要"
+        :rules="[{ required: true, message: '请填写摘要' }]"
+      />
+      <van-field
+        v-model="formState.keyword"
+        name="keyword"
+        label="关键词"
+        placeholder="关键词"
+        :rules="[{ required: true, message: '请填写关键词' }]"
+      />
+      <template v-if="submitMode==0">
+        <van-field
+          v-model="formState.sno"
+          name="sno"
+          label="学号"
+          placeholder="学号"
+          :rules="[{ required: true, message: '请填写学号' }]"
+        />
+        <van-field
+          v-model="formState.tno"
+          name="tno"
+          label="教师编号"
+          placeholder="教师编号"
+          :rules="[{ required: true, message: '请填写教师编号' }]"
+        />
+      </template>
       <div style="margin: 16px">
-        <van-button round block type="success" native-type="submit">提交</van-button>
+        <van-button round block type="success" native-type="submit"
+          >提交</van-button
+        >
         <van-button round block type="danger" @click="showDialog = false"
-          >取消</van-button>
+          >取消</van-button
+        >
       </div>
     </van-form>
     <!-- <img src="https://img01.yzcdn.cn/vant/apple-3.jpg" /> -->
   </Dialog>
-  <loading-overlay :show="showOverlay"/>
+  <loading-overlay :show="showOverlay" />
 </template>
 <script>
-import {
-  Search,
-  List,
-  Dialog
-} from "vant";
-import loadingOverlay from "./loadingOverlay.vue"
+import { Search, List, Dialog } from "vant";
+import loadingOverlay from "./loadingOverlay.vue";
 import { ref, reactive } from "vue";
 export default {
   name: "manageAllArticle",
   data() {
     return {
+      queryNo: "",
+      submitMode: 0,
       page: 1,
       result: [],
       checked: [],
@@ -136,7 +136,7 @@ export default {
     Search,
     List,
     Dialog: Dialog.Component,
-    loadingOverlay
+    loadingOverlay,
   },
   mounted() {
     let storage = window.localStorage;
@@ -152,14 +152,13 @@ export default {
       finished: false,
     });
     const formState = reactive({
-      no: "",
-      name: "",
-      role: "",
-      job: "",
-      academy: "",
-      password: "",
-      dept: "",
-      roleChecked: ref("学生"),
+      paperNo: "",
+      title: "",
+      num: "",
+      summary: "",
+      sno: "",
+      tno: "",
+      keyword: "",
     });
     return {
       searchValue,
@@ -181,10 +180,10 @@ export default {
       // }
       if (this.result.length == 0) {
         this.state.loading = false;
-        this.isEmpty=true
+        this.isEmpty = true;
         return;
       }
-      this.isEmpty=false
+      this.isEmpty = false;
       if (this.result.length >= this.page * 10) {
         for (let i = (this.page - 1) * 10; i < this.page * 10; i++)
           this.state.list.push(this.result[i]);
@@ -207,14 +206,20 @@ export default {
     },
     onAdd() {
       this.dialogTitle = "添加人员";
+      this.submitMode = 0;
       this.showDialog = true;
     },
     onSubmit(values) {
+      values["handle"] = this.submitMode;
+      if (this.submitMode == 1) {
+        values["newno"] = values["no"];
+        values["no"] = this.queryNo;
+      }
       console.log("submit", values);
       let self = this;
       this.$http({
         method: "post",
-        url: "/adminPage/addPerson",
+        url: "/adminPage/addPaper",
         data: values,
       })
         .then(function (res) {
@@ -236,11 +241,13 @@ export default {
     },
     onModify(item) {
       console.log(item);
+      this.queryNo = item.no;
       this.showOverlay = true;
+      this.submitMode = 1;
       let self = this;
       this.$http({
         method: "get",
-        url: "/adminPage/modifyPerson",
+        url: "/adminPage/modifyPaper",
         params: {
           user: item.no,
         },
@@ -248,10 +255,19 @@ export default {
         .then(function (res) {
           if (res.status == 200) {
             console.log(res.data);
-            self.formState.no = res.data.userNO;
-            self.formState.name = res.data.userName;
-            self.formState.password = res.data.password;
-            self.formState.roleChecked = res.data.role;
+            //       paperNo: "",
+            // title: "",
+            // num: "",
+            // summary: "",
+            // sno: "",
+            // tno: "",
+            self.formState.paperNo = res.data.paperNo;
+            self.formState.title = res.data.title;
+            self.formState.summary = res.data.summary;
+            self.formState.num=res.data.num
+            self.formState.sno = res.data.sno;
+            self.formState.tno = res.data.tno;
+            self.formState.keyword=res.data.keyword
 
             self.dialogTitle = item.name;
             self.showOverlay = false;
@@ -279,7 +295,7 @@ export default {
             //   "Content-Type": "application/x-www-form-urlencoded",
             // },
             method: "post",
-            url: "/adminPage/deletePerson",
+            url: "/adminPage/deletePaper",
             data: {
               user: [item.no],
             },
@@ -306,14 +322,12 @@ export default {
         });
     },
     selectAll() {
-      if (this.$refs.checkboxGroup==null)
-        return
+      if (this.$refs.checkboxGroup == null) return;
       this.$refs.checkboxGroup.toggleAll(!this.checkAll);
       this.checkAll = !this.checkAll;
     },
     deleteSelect() {
-      if(this.checked.length==0)
-      return
+      if (this.checked.length == 0) return;
       let noList = [];
       for (let i in this.checked) {
         noList.push(this.state.list[i].no);
@@ -327,11 +341,10 @@ export default {
           let self = this;
           this.$http({
             method: "post",
-            url: "/adminPage/deletePerson",
+            url: "/adminPage/deletePaper",
             data: {
               user: noList,
             },
-
           })
             .then(function (res) {
               if (res.status == 200) {
@@ -361,7 +374,7 @@ export default {
     },
     onSearch(key) {
       console.log(key);
-      this.isEmpty=false
+      this.isEmpty = false;
       this.state.loading = true;
       let self = this;
       this.$http({

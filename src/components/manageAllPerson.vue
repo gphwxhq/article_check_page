@@ -124,6 +124,7 @@ export default {
   name: "manageAllPerson",
   data() {
     return {
+      queryNo:'',
       submitMode:0,
       page: 1,
       result: [],
@@ -208,12 +209,16 @@ export default {
     },
     onAdd() {
       this.dialogTitle = "添加人员";
-      this.showDialog = true;
       this.submitMode=0
+      this.showDialog = true;
     },
     onSubmit(values) {
-      console.log("submit", values);
       values['handle']=this.submitMode
+      if(this.submitMode==1){
+        values['newno']=values['no']
+        values['no']=this.queryNo
+      }
+      console.log("submit", values);
       let self = this;
       this.$http({
         method: "post",
@@ -239,6 +244,7 @@ export default {
     },
     onModify(item) {
       console.log(item);
+      this.queryNo=item.no
       this.showOverlay = true;
       this.submitMode=1
       let self = this;
@@ -256,6 +262,9 @@ export default {
             self.formState.name = res.data.userName;
             self.formState.password = res.data.password;
             self.formState.roleChecked = res.data.role;
+            self.formState.dept=res.data.userDept
+            if(res.data.role=='教师')
+              self.formState.job=res.data.userJob
 
             self.dialogTitle = item.name;
             self.showOverlay = false;

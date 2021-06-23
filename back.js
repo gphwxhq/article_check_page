@@ -61,18 +61,18 @@ http.createServer(function (req, res) {
             var uploadedPath = inputFile.path;
             var dstPath = './public/images/' + inputFile.originalFilename;
             //重命名为真实文件名
-            fs.rename(uploadedPath, dstPath, function (err) {console.log(err ) })
+            fs.rename(uploadedPath, dstPath, function (err) { console.log(err) })
         });
         res.writeHead(200, { 'Content-type': 'application/json' });
-        res.end(JSON.stringify({'paperFinish':true}))
+        res.end(JSON.stringify({ 'paperFinish': true }))
     }
     else if (pathname == '/stuPage/init') {
         let getstu = myURL.searchParams.get('user')
         //console.log(myURL.searchParams.get('getstu') ) 
         console.log(getstu)
         let data = {
-            "userName":"阿巴",
-            "handIn":true
+            "userName": "阿巴",
+            "handIn": true
         }
         console.log(data)
         setTimeout(function () {
@@ -99,35 +99,35 @@ http.createServer(function (req, res) {
         let getstu = myURL.searchParams.get('user')
         //console.log(myURL.searchParams.get('getstu') ) 
         console.log(getstu)
-         let data = {
+        let data = {
             "PaperNo": "PaperNo",
             "Title": "Title",
             "Checkin": "通过",
             "Status": "Status"
         }
         setTimeout(function () {
-        res.writeHead(200, { 'Content-type': 'application/json' });
-        res.end(JSON.stringify(data))
-        },2000)
+            res.writeHead(200, { 'Content-type': 'application/json' });
+            res.end(JSON.stringify(data))
+        }, 2000)
     }
     else if (pathname == '/adminPage') {
         let key = myURL.searchParams.get('keyWords')
         //console.log(myURL.searchParams.get('getstu') ) 
         console.log(key)
-         let data = {
-            res:[{'no':'123','name':'1'},{'no':'1234','name':'2'},{'no':'123','name':'3'},{'no':'1234','name':'4'},{'no':'123','name':'5'},{'no':'1234','name':'6'},{'no':'123','name':'7'},{'no':'1234','name':'8'},{'no':'123','name':'9'},{'no':'1234','name':'10'},{'no':'123','name':'11'},{'no':'1234','name':'12'},{'no':'123','name':'13'},{'no':'1234','name':'14'},{'no':'123','name':'15'},{'no':'1234','name':'16'},{'no':'123','name':'17'},{'no':'1234','name':'18'},{'no':'123','name':'19'},{'no':'1234','name':'20'},{'no':'123','name':'21'},{'no':'1234','name':'22'}]
+        let data = {
+            res: [{ 'no': '123', 'name': '1' }, { 'no': '1234', 'name': '2' }, { 'no': '123', 'name': '3' }, { 'no': '1234', 'name': '4' }, { 'no': '123', 'name': '5' }, { 'no': '1234', 'name': '6' }, { 'no': '123', 'name': '7' }, { 'no': '1234', 'name': '8' }, { 'no': '123', 'name': '9' }, { 'no': '1234', 'name': '10' }, { 'no': '123', 'name': '11' }, { 'no': '1234', 'name': '12' }, { 'no': '123', 'name': '13' }, { 'no': '1234', 'name': '14' }, { 'no': '123', 'name': '15' }, { 'no': '1234', 'name': '16' }, { 'no': '123', 'name': '17' }, { 'no': '1234', 'name': '18' }, { 'no': '123', 'name': '19' }, { 'no': '1234', 'name': '20' }, { 'no': '123', 'name': '21' }, { 'no': '1234', 'name': '22' }]
         }
         setTimeout(function () {
-        res.writeHead(200, { 'Content-type': 'application/json' });
-        res.end(JSON.stringify(data))
-        },2000)
+            res.writeHead(200, { 'Content-type': 'application/json' });
+            res.end(JSON.stringify(data))
+        }, 2000)
     }
-    else if (pathname=='/adminPage/init'){
+    else if (pathname == '/adminPage/init') {
         let getstu = myURL.searchParams.get('user')
         //console.log(myURL.searchParams.get('getstu') ) 
         console.log(getstu)
         let data = {
-            "userName":"阿巴",
+            "userName": "阿巴",
         }
         console.log(data)
         setTimeout(function () {
@@ -135,15 +135,15 @@ http.createServer(function (req, res) {
             res.end(JSON.stringify(data))
         }, 2000)
     }
-    else if (pathname=='/adminPage/modifyPerson'){
+    else if (pathname == '/adminPage/modifyPerson') {
         let getstu = myURL.searchParams.get('user')
         //console.log(myURL.searchParams.get('getstu') ) 
         console.log(getstu)
         let data = {
-            "userNO":'123',
-            "userName":"阿巴",
-            "password":'123',
-            "role":"教师"
+            "userNO": '123',
+            "userName": "阿巴",
+            "password": '123',
+            "role": "教师"
         }
         console.log(data)
         setTimeout(function () {
@@ -151,7 +151,7 @@ http.createServer(function (req, res) {
             res.end(JSON.stringify(data))
         }, 2000)
     }
-    else if (pathname=="/adminPage/deletePerson"){
+    else if (pathname == "/adminPage/deletePerson") {
         let data = []
         req.on('data', chunk => {
             data.push(chunk)  // 将接收到的数据暂时保存起来
@@ -166,12 +166,59 @@ http.createServer(function (req, res) {
             res.end(JSON.stringify(dData))
         })
     }
-    else if (pathname=='/teacherPage/init'){
+
+    else if (pathname == '/adminPage/article') {
+        let key = myURL.searchParams.get('keyWords')
+        //console.log(myURL.searchParams.get('getstu') ) 
+        console.log(key)
+        let data = {
+            res: [{ 'no': '123', 'name': '1' }, { 'no': '1234', 'name': '2' }, { 'no': '123', 'name': '3' }, { 'no': '1234', 'name': '4' }, { 'no': '123', 'name': '5' }, { 'no': '1234', 'name': '6' }, { 'no': '123', 'name': '7' }, { 'no': '1234', 'name': '8' }, { 'no': '123', 'name': '9' }, { 'no': '1234', 'name': '10' }, { 'no': '123', 'name': '11' }, { 'no': '1234', 'name': '12' }, { 'no': '123', 'name': '13' }, { 'no': '1234', 'name': '14' }, { 'no': '123', 'name': '15' }, { 'no': '1234', 'name': '16' }, { 'no': '123', 'name': '17' }, { 'no': '1234', 'name': '18' }, { 'no': '123', 'name': '19' }, { 'no': '1234', 'name': '20' }, { 'no': '123', 'name': '21' }, { 'no': '1234', 'name': '22' }]
+        }
+        setTimeout(function () {
+            res.writeHead(200, { 'Content-type': 'application/json' });
+            res.end(JSON.stringify(data))
+        }, 2000)
+    }
+    else if (pathname == '/adminPage/modifyPaper') {
         let getstu = myURL.searchParams.get('user')
         //console.log(myURL.searchParams.get('getstu') ) 
         console.log(getstu)
         let data = {
-            "userName":"阿巴",
+            paperNo: "1",
+            title: "2",
+            num: "3",
+            summary: "4",
+            sno: "5",
+            tno: "6",
+            keyword:"7"
+        }
+        console.log(data)
+        setTimeout(function () {
+            res.writeHead(200, { 'Content-type': 'application/json' });
+            res.end(JSON.stringify(data))
+        }, 2000)
+    }
+    else if (pathname == "/adminPage/deletePaper") {
+        let data = []
+        req.on('data', chunk => {
+            data.push(chunk)  // 将接收到的数据暂时保存起来
+        })
+        req.on('end', () => {
+            data = JSON.parse(data)
+            console.log(data) // 数据传输完，打印数据的内容
+            let dData = {
+                'success': true
+            }
+            res.writeHead(200, { 'Content-type': 'application/json' });
+            res.end(JSON.stringify(dData))
+        })
+    }
+    else if (pathname == '/teacherPage/init') {
+        let getstu = myURL.searchParams.get('user')
+        //console.log(myURL.searchParams.get('getstu') ) 
+        console.log(getstu)
+        let data = {
+            "userName": "阿巴",
         }
         console.log(data)
         setTimeout(function () {
