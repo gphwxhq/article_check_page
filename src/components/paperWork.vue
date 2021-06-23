@@ -121,7 +121,7 @@ import {
 import loadingOverlay from "./loadingOverlay.vue"
 import { ref, reactive } from "vue";
 export default {
-  name: "manageAllArticle",
+  name: "paperWork",
   data() {
     return {
       page: 1,

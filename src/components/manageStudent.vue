@@ -1,5 +1,5 @@
 <template>
-  <div id="manageAllArticle">
+  <div id="manageAllPerson">
     <Search
       v-model="searchValue"
       placeholder="请输入要搜索的人员"
@@ -7,7 +7,7 @@
       @search="onSearch"
     />
     <!-- <div> -->
-    <div class="article_button_group">
+    <div class="person_button_group">
       <van-button type="primary" plain @click="onAdd">添加</van-button>
       <van-button type="primary" plain @click="selectAll">{{
         checkAll ? "取消全选" : "全选"
@@ -121,9 +121,10 @@ import {
 import loadingOverlay from "./loadingOverlay.vue"
 import { ref, reactive } from "vue";
 export default {
-  name: "manageAllArticle",
+  name: "manageStudent",
   data() {
     return {
+      submitMode:0,
       page: 1,
       result: [],
       checked: [],
@@ -208,9 +209,11 @@ export default {
     onAdd() {
       this.dialogTitle = "添加人员";
       this.showDialog = true;
+      this.submitMode=0
     },
     onSubmit(values) {
       console.log("submit", values);
+      values['handle']=this.submitMode
       let self = this;
       this.$http({
         method: "post",
@@ -237,6 +240,7 @@ export default {
     onModify(item) {
       console.log(item);
       this.showOverlay = true;
+      this.submitMode=1
       let self = this;
       this.$http({
         method: "get",
@@ -369,7 +373,7 @@ export default {
         //   "Content-Type": "application/x-www-form-urlencoded",
         // },
         method: "get",
-        url: "/adminPage/article",
+        url: "/adminPage",
         params: {
           keyWords: key,
         },
@@ -399,14 +403,5 @@ export default {
 };
 </script>
 <style>
-.article_button_group {
-  background: white;
-  position: sticky;
-  top: 97px;
-  z-index: 1;
-  text-align: right;
-}
-#manageAllArticle .van-button--normal {
-  margin-left: 5px;
-}
+
 </style>

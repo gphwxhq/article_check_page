@@ -124,6 +124,7 @@ export default {
   name: "manageAllPerson",
   data() {
     return {
+      submitMode:0,
       page: 1,
       result: [],
       checked: [],
@@ -208,9 +209,11 @@ export default {
     onAdd() {
       this.dialogTitle = "添加人员";
       this.showDialog = true;
+      this.submitMode=0
     },
     onSubmit(values) {
       console.log("submit", values);
+      values['handle']=this.submitMode
       let self = this;
       this.$http({
         method: "post",
@@ -237,6 +240,7 @@ export default {
     onModify(item) {
       console.log(item);
       this.showOverlay = true;
+      this.submitMode=1
       let self = this;
       this.$http({
         method: "get",
