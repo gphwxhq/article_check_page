@@ -15,7 +15,7 @@
 <script>
 // import { CellGroup, Cell } from "vant";
 export default {
-  name: "stuPage",
+  name: "baseInfo",
   data() {
     return {
       baseInfo: {

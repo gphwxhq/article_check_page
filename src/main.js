@@ -14,6 +14,8 @@ import baseInfo from './components/baseInfo.vue'
 import uploadArtile from './components/uploadArticle.vue'
 import checkResult from './components/checkResult.vue'
 
+import teacherBaseInfo from './components/teacherBaseInfo'
+
 import manageAllPerson from './components/manageAllPerson.vue'
 import manageAllArticle from './components/manageAllArticle.vue'
 import systemSetting from './components/systemSetting.vue'
@@ -25,7 +27,7 @@ axios.defaults.timeout=5000;
 const routes = [
   { path: '/', name: 'login', component: page1 },
   { path: "/stuPage", name: 'stuPage', component: page2, children: [{ path: '',name:'stu0', component: baseInfo },{ path: 'uploadArticle',name:'stu1', component: uploadArtile },{ path: 'checkResult',name:'stu2', component: checkResult }] },
-  { path: "/teacherPage", name: 'teacherPage', component: page3 },
+  { path: "/teacherPage", name: 'teacherPage', component: page3, children: [{ path: '',name:'teacher0', component: teacherBaseInfo },{ path: 'uploadArticle',name:'teacher1', component: teacherBaseInfo },{ path: 'checkResult',name:'teacher2', component:teacherBaseInfo }] },
   { path: "/adminPage", name: 'adminPage', component: page4,children: [{ path: '',name:'admin0', component: manageAllPerson },{ path: '',name:'admin1', component: manageAllArticle },{ path: '',name:'admin2', component: systemSetting }]},
 ]
 
