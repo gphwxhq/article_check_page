@@ -122,7 +122,7 @@ export default {
         摘要: null,
         关键字: null,
         作者学号: null,
-        指导老师编号: null,
+        指导教师编号: null,
         评审专家: null,
         是否提交: null,
         状态: null,
@@ -218,7 +218,8 @@ export default {
     beforeClose(action){
       // console.log(action)
       return new Promise((resolve) => {
-        if (action=='cancel'||this.role=="指导老师"||this.dropDownState.value!=0) {
+        console.log(this.role=="指导教师")
+        if (action=='cancel'||this.role=="指导教师"||this.dropDownState.value!=0) {
           resolve(true);
         } else {
           this.$notify({ type: "danger", message: "请至少选择一项" });
@@ -234,7 +235,7 @@ export default {
           { text: "不通过", value: 2 },
         ];
         return;
-      } else if (this.role == "指导老师") return;
+      } else if (this.role == "指导教师") return;
       let self = this;
       this.$http({
         method: "get",
@@ -260,7 +261,7 @@ export default {
         });
     },
     onConfirm() {
-      if(this.dropDownState.value==0&&this.role != "指导老师")
+      if(this.dropDownState.value==0&&this.role != "指导教师")
         return
       let values = null;
       if (this.role == "教学秘书") {
@@ -332,7 +333,7 @@ export default {
             self.detail.摘要 = res.data.summary;
             self.detail.关键字 = res.data.keyword;
             self.detail.作者学号 = res.data.sno;
-            self.detail.指导老师编号 = res.data.tno;
+            self.detail.指导教师编号 = res.data.tno;
             self.detail.评审专家 = res.data.rtno;
             self.detail.是否提交 = res.data.checkin;
             self.detail.状态 = res.data.status;
@@ -443,7 +444,7 @@ export default {
     onSearch(key) {
       let url = null;
       let params = null;
-      if (this.role == "指导老师") {
+      if (this.role == "指导教师") {
         url = "/teacherPage/zcheckArticle";
         params = {
           keyWords: key,

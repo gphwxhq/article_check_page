@@ -1,10 +1,10 @@
 <template>
   <div class="title">
     <img
-      style="width: 25px; height: 25px; padding-right: 5px"
+      style="width: 25px; height: 25px;"
       src="../assets/logo.png"
     />
-    <div style="display: inline-block;font-size: 25px;font-family:'微软雅黑';">论文审核系统</div>
+    <div style="font-size: 25px;font-family:'微软雅黑';padding-left:5px;">论文审核系统</div>
     <div class="ltitle">{{user}}</div>
     <div class="rtitle">欢迎您,{{ userName }}</div>
   </div>
@@ -17,6 +17,10 @@ export default {
 </script>
 <style>
 .title {
+  height: 33px;
+  display: flex;
+  /* align-content: space-around; */
+  align-items: center;
   position: fixed;
   top: 0;
   left: 0;
@@ -32,13 +36,13 @@ export default {
 }
 .ltitle {
   padding-left: 10px;
-  display: inline-block;
+  /* display: inline-block; */
   font-size: 20px;
 }
 .rtitle {
-  padding-top: 9px;
+  flex: 1;
   font-size: 15px;
-  float: right;
+  text-align: right;
   color: rgb(237, 243, 244);
 }
 </style>

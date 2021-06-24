@@ -58,7 +58,7 @@ export default {
           self.role=res.data.role;
           storage["teacherRole"]=res.data.role;
           storage["teacherDept"]=res.data.dept;
-          if(res.data.role=='指导老师')
+          if(res.data.role=='指导教师')
             self.sideBarList.push({'t': '学生管理','a':true})
           self.sideBarList.push({'t': '论文评审','a':true})
         } else {
