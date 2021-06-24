@@ -190,7 +190,7 @@ http.createServer(function (req, res) {
             summary: "4",
             sno: "5",
             tno: "6",
-            keyword:"7"
+            keyword: "7"
         }
         console.log(data)
         setTimeout(function () {
@@ -219,8 +219,8 @@ http.createServer(function (req, res) {
         console.log(getstu)
         let data = {
             "tname": "阿巴",
-            "role":"教学秘书",
-            "dept":'dept'
+            "role": "指导老师",
+            "dept": 'dept'
         }
         console.log(data)
         setTimeout(function () {
@@ -228,17 +228,61 @@ http.createServer(function (req, res) {
             res.end(JSON.stringify(data))
         }, 2000)
     }
-    else if(pathname == '/teacherPage'){
+    else if (pathname == '/teacherPage') {
         let getstu = myURL.searchParams.get('user')
         //console.log(myURL.searchParams.get('getstu') ) 
         console.log(getstu)
-        let data={
-            "tno":1,
-            "tname":2,
-            "tdept":3,
-            "role":4,
-            "job":5,
-          }
+        let data = {
+            "tno": 1,
+            "tname": 2,
+            "tdept": 3,
+            "role": 4,
+            "job": 5,
+        }
+        console.log(data)
+        setTimeout(function () {
+            res.writeHead(200, { 'Content-type': 'application/json' });
+            res.end(JSON.stringify(data))
+        }, 2000)
+    }
+    else if (pathname == '/teacherPage/mcheckArticle'||pathname == '/teacherPage/pcheckArticle'||pathname == '/teacherPage/zcheckArticle') {
+        let key = myURL.searchParams.get('keyWords')
+        //console.log(myURL.searchParams.get('getstu') ) 
+        console.log(key)
+        let data = [{ 'no': '123', 'name': '1' }, { 'no': '1234', 'name': '2' }, { 'no': '123', 'name': '3' }, { 'no': '1234', 'name': '4' }, { 'no': '123', 'name': '5' }, { 'no': '1234', 'name': '6' }, { 'no': '123', 'name': '7' }, { 'no': '1234', 'name': '8' }, { 'no': '123', 'name': '9' }, { 'no': '1234', 'name': '10' }, { 'no': '123', 'name': '11' }, { 'no': '1234', 'name': '12' }, { 'no': '123', 'name': '13' }, { 'no': '1234', 'name': '14' }, { 'no': '123', 'name': '15' }, { 'no': '1234', 'name': '16' }, { 'no': '123', 'name': '17' }, { 'no': '1234', 'name': '18' }, { 'no': '123', 'name': '19' }, { 'no': '1234', 'name': '20' }, { 'no': '123', 'name': '21' }, { 'no': '1234', 'name': '22' }]
+
+        setTimeout(function () {
+            res.writeHead(200, { 'Content-type': 'application/json' });
+            res.end(JSON.stringify(data))
+        }, 2000)
+    }
+    else if (pathname == '/teacherPage/modifyArticle') {
+        let getstu = myURL.searchParams.get('user')
+        //console.log(myURL.searchParams.get('getstu') ) 
+        console.log(getstu)
+        let data = {
+            no: 1,
+            name: 1,
+            num: 1,
+            summary: 1,
+            keyword: 1,
+            sno: 1,
+            tno: 1,
+            rtno: 1,
+            checkin: 1,
+            status: 1,
+        }
+        console.log(data)
+        setTimeout(function () {
+            res.writeHead(200, { 'Content-type': 'application/json' });
+            res.end(JSON.stringify(data))
+        }, 2000)
+    }
+    else if (pathname == '/teacherPage/deptTeacher') {
+        let getstu = myURL.searchParams.get('dept')
+        //console.log(myURL.searchParams.get('getstu') ) 
+        console.log(getstu)
+        let data = [{text:'字',value:2}]
         console.log(data)
         setTimeout(function () {
             res.writeHead(200, { 'Content-type': 'application/json' });

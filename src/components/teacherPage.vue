@@ -60,8 +60,7 @@ export default {
           storage["teacherDept"]=res.data.dept;
           if(res.data.role=='指导老师')
             self.sideBarList.push({'t': '学生管理','a':true})
-          else
-            self.sideBarList.push({'t': '论文评审','a':true})
+          self.sideBarList.push({'t': '论文评审','a':true})
         } else {
           self.$notify({ type: "danger", message: "网络连接错误" });
         }

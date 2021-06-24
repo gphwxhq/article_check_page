@@ -12,6 +12,13 @@
       <van-button type="primary" plain @click="selectAll">{{
         checkAll ? "取消全选" : "全选"
       }}</van-button>
+      <van-button
+        v-if="role == '教学秘书'"
+        type="primary"
+        plain
+        @click="modifySelect"
+        >分配专家</van-button
+      >
       <!-- <van-button type="danger" plain @click="deleteSelect">删除</van-button> -->
     </div>
     <List
@@ -29,9 +36,13 @@
               <template #icon>
                 <van-checkbox :name="i" />
               </template>
-              <van-button type="primary" @click="onModify(item)"
-                >修改</van-button
-              >
+              <van-button type="primary" @click="onModify(item)">{{
+                role == "教学秘书"
+                  ? "分配专家"
+                  : role == "专家"
+                  ? "评审"
+                  : "查看详情"
+              }}</van-button>
               <!-- <van-button type="danger" @click="onDelete(i, item)"
                 >删除</van-button
               > -->
@@ -48,101 +59,73 @@
     :title="dialogTitle"
     :show-cancel-button="true"
     confirm-button-text="提交"
+    @confirm="onConfirm"
+    :beforeClose="beforeClose"
   >
-    <!-- <van-form @submit="onSubmit">
-      <van-field
-        v-model="formState.paperNo"
-        name="no"
-        label="编号"
-        placeholder="编号"
-        :rules="[{ required: true, message: '请填写编号' }]"
+    <van-cell-group title="论文信息">
+      <van-cell
+        :title="key"
+        :value="val"
+        v-for="(val, key) in detail"
+        :key="val"
       />
-      <van-field
-        v-model="formState.title"
-        name="title"
-        label="标题"
-        placeholder="标题"
-        :rules="[{ required: true, message: '请填写标题' }]"
-      />
-      <van-field
-        v-model="formState.num"
-        name="num"
-        label="字数"
-        placeholder="字数"
-        :rules="[{ required: true, message: '请填写字数' }]"
-      />
-      <van-field
-        v-model="formState.summary"
-        name="summary"
-        label="摘要"
-        placeholder="摘要"
-        :rules="[{ required: true, message: '请填写摘要' }]"
-      />
-      <van-field
-        v-model="formState.keyword"
-        name="keyword"
-        label="关键词"
-        placeholder="关键词"
-        :rules="[{ required: true, message: '请填写关键词' }]"
-      />
-      <template v-if="submitMode == 0">
-        <van-field
-          v-model="formState.sno"
-          name="sno"
-          label="学号"
-          placeholder="学号"
-          :rules="[
-            { required: true, message: '请填写学号' },
-            { pattern: /^\d{6}$/, message: '请输入6位数字' },
-          ]"
-        />
-        <van-field
-          v-model="formState.tno"
-          name="tno"
-          label="教师编号"
-          placeholder="教师编号"
-          :rules="[
-            { required: true, message: '请填写教师编号' },
-            { pattern: /^\d{8}$/, message: '请输入8位数字' },
-          ]"
-        />
-      </template>
-      <div style="margin: 16px">
-        <van-button round block type="success" native-type="submit"
-          >提交</van-button
-        >
-        <van-button round block type="danger" @click="showDialog = false"
-          >取消</van-button
-        >
-      </div>-->
-      <DropdownMenu :overlay="false" z-index="3000">
+    </van-cell-group>
+    <van-cell-group title="工作区">
+      <DropdownMenu
+        v-if="role == '教学秘书' || role == '专家'"
+        :overlay="false"
+        z-index="3000"
+        direction="up"
+      >
         <DropdownItem
           v-model="dropDownState.value"
           :options="option"
           teleport="body"
         />
       </DropdownMenu>
+      <van-field
+        v-else-if="role == '指导老师'"
+        v-model="suggestions"
+        label="意见"
+        placeholder="请输入意见"
+      />
+    </van-cell-group>
     <!-- </van-form>  -->
     <!-- <img src="https://img01.yzcdn.cn/vant/apple-3.jpg" /> -->
   </Dialog>
   <loading-overlay :show="showOverlay" />
 </template>
 <script>
-import { Search, List, Dialog,DropdownMenu,DropdownItem } from "vant";
+import { Search, List, Dialog, DropdownMenu, DropdownItem } from "vant";
 import loadingOverlay from "./loadingOverlay.vue";
 import { ref, reactive } from "vue";
 export default {
   name: "paperWork",
   data() {
     return {
-      // queryNo: "",
+      queryNo: null,
       // submitMode: 0,
+      dept: null,
+      user: null,
+      role: null,
       page: 1,
       result: [],
       checked: [],
       checkAll: false,
       dialogTitle: "",
       isEmpty: false,
+      detail: {
+        论文编号: null,
+        论文题目: null,
+        字数: null,
+        摘要: null,
+        关键字: null,
+        作者学号: null,
+        指导老师编号: null,
+        评审专家: null,
+        是否提交: null,
+        状态: null,
+      },
     };
   },
   components: {
@@ -156,10 +139,13 @@ export default {
   mounted() {
     let storage = window.localStorage;
     this.user = storage.getItem("user");
-    this.role=storage.getItem("teacherRole")
-    this.dept=storage.getItem("teacherDept")
+    this.role = storage.getItem("teacherRole");
+    this.dept = storage.getItem("teacherDept");
+    this.onSearch("");
+    this.initExperts();
   },
   setup() {
+    const suggestions = ref("");
     const dropDownState = reactive({
       value: 0,
     });
@@ -182,6 +168,7 @@ export default {
     //   keyword: "",
     // });
     return {
+      suggestions,
       dropDownState,
       option,
       searchValue,
@@ -227,41 +214,100 @@ export default {
       // }
       // }, 1000);
     },
-    // onAdd() {
-    //   this.dialogTitle = "添加论文";
-    //   this.submitMode = 0;
-    //   this.showDialog = true;
-    // },
-    // onSubmit(values) {
-    //   values["handle"] = this.submitMode;
-    //   if (this.submitMode == 1) {
-    //     values["newno"] = values["no"];
-    //     values["no"] = this.queryNo;
-    //   }
-    //   console.log("submit", values);
-    //   let self = this;
-    //   this.$http({
-    //     method: "post",
-    //     url: "/teacherPage/addPaper",
-    //     data: values,
-    //   })
-    //     .then(function (res) {
-    //       if (res.status == 200) {
-    //         console.log(res.data);
-    //         if (res.data.success) {
-    //           self.$notify({ type: "success", message: "添加成功" });
-    //         } else {
-    //           self.$notify({ type: "danger", message: "网络连接错误" });
-    //         }
-    //       } else {
-    //         self.$notify({ type: "danger", message: "网络连接错误" });
-    //       }
-    //     })
-    //     .catch((err) => {
-    //       console.log("rejected", err);
-    //       self.$notify({ type: "danger", message: "网络连接错误" });
-    //     });
-    // },
+    beforeClose(action){
+      // console.log(action)
+      return new Promise((resolve) => {
+        if (action=='cancel'||this.role=="指导老师"||this.dropDownState.value!=0) {
+          resolve(true);
+        } else {
+          this.$notify({ type: "danger", message: "请至少选择一项" });
+          resolve(false);
+        }
+      })
+    },
+    initExperts() {
+      if (this.role == "专家") {
+        this.option = [
+          { text: "是否通过", value: 0 },
+          { text: "通过", value: 1 },
+          { text: "不通过", value: 2 },
+        ];
+        return;
+      } else if (this.role == "指导老师") return;
+      let self = this;
+      this.$http({
+        method: "get",
+        url: "/teacherPage/deptTeacher",
+        params: {
+          dept: this.dept,
+        },
+      })
+        .then(function (res) {
+          if (res.status == 200) {
+            console.log(res.data);
+
+            self.option = self.option.concat(res.data);
+            console.log(self.option);
+          } else {
+            self.$notify({ type: "danger", message: "网络连接错误" });
+          }
+        })
+        .catch((err) => {
+          console.log("rejected", err);
+          self.$notify({ type: "danger", message: "网络连接错误" });
+          // self.isError = true;
+        });
+    },
+    onConfirm() {
+      if(this.dropDownState.value==0&&this.role != "指导老师")
+        return
+      let values = null;
+      if (this.role == "教学秘书") {
+        console.log(this.dropDownState.value);
+        values = {
+          no: this.queryNo,
+          rtno: this.dropDownState.value,
+          handle: 0,
+        };
+      } else if (this.role == "专家") {
+        console.log(this.option[this.dropDownState.value].text);
+        values = {
+          no: this.queryNo,
+          status: this.option[this.dropDownState.value].text,
+          handle: 2,
+        };
+      } else {
+        console.log(this.suggestions);
+        values = {
+          no: this.queryNo,
+          suggest: this.suggestions,
+          handle: 1,
+        };
+      }
+
+      let self = this;
+      this.$http({
+        method: "post",
+        url: "/teacherPage/handleArticle",
+        data: values,
+      })
+        .then(function (res) {
+          if (res.status == 200) {
+            console.log(res.data);
+            if (res.data.success) {
+              self.$notify({ type: "success", message: "操作成功" });
+            } else {
+              self.$notify({ type: "danger", message: "网络连接错误" });
+            }
+          } else {
+            self.$notify({ type: "danger", message: "网络连接错误" });
+          }
+        })
+        .catch((err) => {
+          console.log("rejected", err);
+          self.$notify({ type: "danger", message: "网络连接错误" });
+        });
+    },
     onModify(item) {
       console.log(item);
       this.queryNo = item.no;
@@ -270,7 +316,7 @@ export default {
       let self = this;
       this.$http({
         method: "get",
-        url: "/teacherPage/modifyPaper",
+        url: "/teacherPage/modifyArticle",
         params: {
           user: item.no,
         },
@@ -278,19 +324,17 @@ export default {
         .then(function (res) {
           if (res.status == 200) {
             console.log(res.data);
-            //       paperNo: "",
-            // title: "",
-            // num: "",
-            // summary: "",
-            // sno: "",
-            // tno: "",
-            self.formState.paperNo = res.data.paperNo;
-            self.formState.title = res.data.title;
-            self.formState.summary = res.data.summary;
-            self.formState.num = res.data.num;
-            self.formState.sno = res.data.sno;
-            self.formState.tno = res.data.tno;
-            self.formState.keyword = res.data.keyword;
+
+            self.detail.论文编号 = res.data.no;
+            self.detail.论文题目 = res.data.name;
+            self.detail.字数 = res.data.num;
+            self.detail.摘要 = res.data.summary;
+            self.detail.关键字 = res.data.keyword;
+            self.detail.作者学号 = res.data.sno;
+            self.detail.指导老师编号 = res.data.tno;
+            self.detail.评审专家 = res.data.rtno;
+            self.detail.是否提交 = res.data.checkin;
+            self.detail.状态 = res.data.status;
 
             self.dialogTitle = item.name;
             self.showOverlay = false;
@@ -349,7 +393,7 @@ export default {
       this.$refs.checkboxGroup.toggleAll(!this.checkAll);
       this.checkAll = !this.checkAll;
     },
-    deleteSelect() {
+    modifySelect() {
       if (this.checked.length == 0) return;
       let noList = [];
       for (let i in this.checked) {
@@ -396,30 +440,28 @@ export default {
         });
     },
     onSearch(key) {
-      let url=null
-      let params=null
-      if(this.role=="指导老师"){
-        url="zcheckArticle"
-        params={
+      let url = null;
+      let params = null;
+      if (this.role == "指导老师") {
+        url = "/teacherPage/zcheckArticle";
+        params = {
           keyWords: key,
-          tno:this.user
-        }
-      }
-      else if(this.role=="专家"){
-        url="pcheckArticle"
-        params={
+          tno: this.user,
+        };
+      } else if (this.role == "专家") {
+        url = "/teacherPage/pcheckArticle";
+        params = {
           keyWords: key,
-          tno:this.user
-        }
-      }
-      else{
-        params={
+          tno: this.user,
+        };
+      } else {
+        params = {
           keyWords: key,
-          dept:this.dept
-        }
-        url="mcheckArticle"
+          dept: this.dept,
+        };
+        url = "/teacherPage/mcheckArticle";
       }
-        
+
       console.log(key);
       this.isEmpty = false;
       this.state.loading = true;
@@ -430,12 +472,12 @@ export default {
         // },
         method: "get",
         url: url,
-        params: params
+        params: params,
       })
         .then(function (res) {
           if (res.status == 200) {
             console.log(res.data);
-            self.result = res.data.res;
+            self.result = res.data;
             // self.$emit("name", res.data.Sname);
             // self.state.loading = false;
             self.state.list = [];
@@ -457,7 +499,7 @@ export default {
 };
 </script>
 <style>
-.van-dropdown-item--down {
+.van-dropdown-item--up {
   width: 320px;
   margin: 0 auto;
 }
