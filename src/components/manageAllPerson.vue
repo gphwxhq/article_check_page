@@ -47,7 +47,6 @@
     v-model:show="showDialog"
     :title="dialogTitle"
     :show-confirm-button="false"
-    confirm-button-text="提交"
   >
     <van-form @submit="onSubmit">
       <van-field name="role" label="单选框">

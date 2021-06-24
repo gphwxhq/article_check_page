@@ -23,7 +23,7 @@ export default {
       role:null,
       user: null,
       show: false,
-      sideBarList:[{'t':'个人信息','a':true}]
+      sideBarList:[{'t':'个人信息','a':true},{'t': '论文评审','a':true}]
     };
   },
   components: {
@@ -58,9 +58,9 @@ export default {
           self.role=res.data.role;
           storage["teacherRole"]=res.data.role;
           storage["teacherDept"]=res.data.dept;
-          if(res.data.role=='指导教师')
-            self.sideBarList.push({'t': '学生管理','a':true})
-          self.sideBarList.push({'t': '论文评审','a':true})
+          // if(res.data.role=='指导教师')
+          //   self.sideBarList.push({'t': '学生管理','a':true})
+          // self.sideBarList.push({'t': '论文评审','a':true})
         } else {
           self.$notify({ type: "danger", message: "网络连接错误" });
         }

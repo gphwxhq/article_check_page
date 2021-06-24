@@ -7,9 +7,9 @@
       @search="onSearch"
     />
     <!-- <div> -->
-    <div class="button_group">
+    <!-- <div class="button_group"> -->
       <!-- <van-button type="primary" plain @click="onAdd">添加</van-button> -->
-      <van-button type="primary" plain @click="selectAll">{{
+      <!-- <van-button type="primary" plain @click="selectAll">{{
         checkAll ? "取消全选" : "全选"
       }}</van-button>
       <van-button
@@ -18,9 +18,9 @@
         plain
         @click="modifySelect"
         >分配专家</van-button
-      >
+      > -->
       <!-- <van-button type="danger" plain @click="deleteSelect">删除</van-button> -->
-    </div>
+    <!-- </div> -->
     <List
       v-model:loading="state.loading"
       :finished="state.finished"
@@ -29,13 +29,13 @@
     >
       <van-empty v-if="isEmpty" description="无内容" />
       <template v-if="!isEmpty">
-        <van-checkbox-group v-model="checked" ref="checkboxGroup">
+        <!-- <van-checkbox-group v-model="checked" ref="checkboxGroup"> -->
           <template v-for="(item, i) in state.list" :key="i">
             <!-- <div class="person_block"> -->
             <van-cell :title="item.name">
-              <template #icon>
+              <!-- <template #icon>
                 <van-checkbox :name="i" />
-              </template>
+              </template> -->
               <van-button type="primary" @click="onModify(item)">{{
                 role == "教学秘书"
                   ? "分配专家"
@@ -49,7 +49,7 @@
             </van-cell>
             <!-- </div> -->
           </template>
-        </van-checkbox-group>
+        <!-- </van-checkbox-group> -->
       </template>
     </List>
   </div>
@@ -61,6 +61,7 @@
     confirm-button-text="提交"
     @confirm="onConfirm"
     :beforeClose="beforeClose"
+    closeOnClickOverlay
 
   >
     <van-cell-group title="论文信息">
@@ -70,6 +71,9 @@
         v-for="(val, key) in detail"
         :key="val"
       />
+    </van-cell-group>
+    <van-cell-group v-if="role!='教学秘书'"  title="论文下载">
+      <van-button  type="primary" @click="download">点击下载</van-button>
     </van-cell-group>
     <van-cell-group title="工作区">
       <DropdownMenu
@@ -111,8 +115,9 @@ export default {
       role: null,
       page: 1,
       result: [],
-      checked: [],
-      checkAll: false,
+      link:null,
+      // checked: [],
+      // checkAll: false,
       dialogTitle: "",
       isEmpty: false,
       detail: {
@@ -126,6 +131,7 @@ export default {
         评审专家: null,
         是否提交: null,
         状态: null,
+        
       },
     };
   },
@@ -180,6 +186,9 @@ export default {
     };
   },
   methods: {
+    download(){
+      window.open(this.link, '_blank');
+    },
     onLoad() {
       // state.loading=true
       console.log(1);
@@ -218,7 +227,7 @@ export default {
     beforeClose(action){
       // console.log(action)
       return new Promise((resolve) => {
-        console.log(this.role=="指导教师")
+
         if (action=='cancel'||this.role=="指导教师"||this.dropDownState.value!=0) {
           resolve(true);
         } else {
@@ -337,6 +346,7 @@ export default {
             self.detail.评审专家 = res.data.rtno;
             self.detail.是否提交 = res.data.checkin;
             self.detail.状态 = res.data.status;
+            self.link=res.data.link;
 
             self.dialogTitle = item.name;
             self.showOverlay = false;
@@ -390,57 +400,57 @@ export default {
     //       // on cancel
     //     });
     // },
-    selectAll() {
-      if (this.$refs.checkboxGroup == null) return;
-      this.$refs.checkboxGroup.toggleAll(!this.checkAll);
-      this.checkAll = !this.checkAll;
-    },
-    modifySelect() {
-      if (this.checked.length == 0) return;
-      let noList = [];
-      for (let i in this.checked) {
-        noList.push(this.state.list[i].no);
-      }
-      console.log(noList);
-      Dialog.confirm({
-        title: "删除确认",
-        message: "确认要删除这些人员吗",
-      })
-        .then(() => {
-          let self = this;
-          this.$http({
-            method: "post",
-            url: "/teacherPage/deletePaper",
-            data: {
-              user: noList,
-            },
-          })
-            .then(function (res) {
-              if (res.status == 200) {
-                console.log(res.data);
-                if (res.data.success) {
-                  self.$notify({ type: "success", message: "删除成功" });
-                  for (let i = self.checked.length - 1; i >= 0; i--) {
-                    self.state.list.splice(self.checked[i], 1);
-                  }
-                  self.$refs.checkboxGroup.toggleAll(false);
-                  self.checkAll = false;
-                  // this.onLoad();
-                }
-              } else {
-                self.$notify({ type: "danger", message: "网络连接错误" });
-              }
-            })
-            .catch((err) => {
-              console.log("rejected", err);
-              self.$notify({ type: "danger", message: "网络连接错误" });
-              // self.isError = true;
-            });
-        })
-        .catch(() => {
-          // on cancel
-        });
-    },
+    // selectAll() {
+    //   if (this.$refs.checkboxGroup == null) return;
+    //   this.$refs.checkboxGroup.toggleAll(!this.checkAll);
+    //   this.checkAll = !this.checkAll;
+    // },
+    // modifySelect() {
+    //   if (this.checked.length == 0) return;
+    //   let noList = [];
+    //   for (let i in this.checked) {
+    //     noList.push(this.state.list[i].no);
+    //   }
+    //   console.log(noList);
+    //   Dialog.confirm({
+    //     title: "删除确认",
+    //     message: "确认要删除这些人员吗",
+    //   })
+    //     .then(() => {
+    //       let self = this;
+    //       this.$http({
+    //         method: "post",
+    //         url: "/teacherPage/deletePaper",
+    //         data: {
+    //           user: noList,
+    //         },
+    //       })
+    //         .then(function (res) {
+    //           if (res.status == 200) {
+    //             console.log(res.data);
+    //             if (res.data.success) {
+    //               self.$notify({ type: "success", message: "删除成功" });
+    //               for (let i = self.checked.length - 1; i >= 0; i--) {
+    //                 self.state.list.splice(self.checked[i], 1);
+    //               }
+    //               self.$refs.checkboxGroup.toggleAll(false);
+    //               self.checkAll = false;
+    //               // this.onLoad();
+    //             }
+    //           } else {
+    //             self.$notify({ type: "danger", message: "网络连接错误" });
+    //           }
+    //         })
+    //         .catch((err) => {
+    //           console.log("rejected", err);
+    //           self.$notify({ type: "danger", message: "网络连接错误" });
+    //           // self.isError = true;
+    //         });
+    //     })
+    //     .catch(() => {
+    //       // on cancel
+    //     });
+    // },
     onSearch(key) {
       let url = null;
       let params = null;
@@ -506,6 +516,8 @@ export default {
   margin: 0 auto;
 }
 .van-dialog{
+  overflow: auto;
+  max-height: 700px;
   width: 700px;
 }
 </style>

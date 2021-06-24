@@ -271,6 +271,8 @@ http.createServer(function (req, res) {
             rtno: 1,
             checkin: 1,
             status: 1,
+            link:"http://www.baidu.com"
+
         }
         console.log(data)
         setTimeout(function () {

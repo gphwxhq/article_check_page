@@ -65,10 +65,9 @@ export default {
       uploadInfo: {
         title: "论文题目",
         teacher: "指导老师",
-        // author: "作者",
-        // words: "关键词",
-        // num: "字数",
-        // digest: "摘要",
+        words: "关键词",
+        num: "字数",
+        digest: "摘要",
       },
     };
   },

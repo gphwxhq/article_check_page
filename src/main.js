@@ -15,7 +15,7 @@ import uploadArticle from './components/uploadArticle.vue'
 import checkResult from './components/checkResult.vue'
 
 import teacherBaseInfo from './components/teacherBaseInfo'
-import manageStudent from './components/manageStudent'
+// import manageStudent from './components/manageStudent'
 import paperWork from './components/paperWork'
 
 import manageAllPerson from './components/manageAllPerson.vue'
@@ -29,7 +29,7 @@ axios.defaults.timeout=5000;
 const routes = [
   { path: '/', name: 'login', component: page1 },
   { path: "/stuPage", name: 'stuPage', component: page2, children: [{ path: '',name:'stu0', component: baseInfo },{ path: 'uploadArticle',name:'stu1', component: uploadArticle },{ path: 'checkResult',name:'stu2', component: checkResult }] },
-  { path: "/teacherPage", name: 'teacherPage', component: page3, children: [{ path: '',name:'teacher个人信息', component: teacherBaseInfo },{ path: 'paperWork',name:'teacher论文评审', component:paperWork },{ path: 'manageStudent',name:'teacher学生管理', component: manageStudent }] },
+  { path: "/teacherPage", name: 'teacherPage', component: page3, children: [{ path: '',name:'teacher个人信息', component: teacherBaseInfo },{ path: 'paperWork',name:'teacher论文评审', component:paperWork }] },
   { path: "/adminPage", name: 'adminPage', component: page4,children: [{ path: '',name:'admin0', component: manageAllPerson },{ path: '',name:'admin1', component: manageAllArticle }]},
 ]
 
