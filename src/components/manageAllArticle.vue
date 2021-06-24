@@ -7,7 +7,7 @@
       @search="onSearch"
     />
     <!-- <div> -->
-    <div class="article_button_group">
+    <div class="button_group">
       <van-button type="primary" plain @click="onAdd">添加</van-button>
       <van-button type="primary" plain @click="selectAll">{{
         checkAll ? "取消全选" : "全选"
@@ -226,7 +226,9 @@ export default {
           if (res.status == 200) {
             console.log(res.data);
             if (res.data.success) {
-              self.$notify({ type: "success", message: "添加成功" });
+              if (this.submitMode == 0)
+                self.$notify({ type: "success", message: "添加成功" });
+              else self.$notify({ type: "success", message: "修改成功" });
             } else {
               self.$notify({ type: "danger", message: "网络连接错误" });
             }
@@ -412,13 +414,6 @@ export default {
 };
 </script>
 <style>
-.article_button_group {
-  background: white;
-  position: sticky;
-  top: 97px;
-  z-index: 1;
-  text-align: right;
-}
 #manageAllArticle .van-button--normal {
   margin-left: 5px;
 }

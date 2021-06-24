@@ -23,7 +23,7 @@ export default {
       role:null,
       user: null,
       show: false,
-      sideBarList:[{'t':'个人信息','a':true},{'t': '论文评审','a':true}]
+      sideBarList:[{'t':'个人信息','a':true}]
     };
   },
   components: {
@@ -54,10 +54,14 @@ export default {
       .then(function (res) {
         if (res.status == 200) {
           console.log(res.data);
-          self.userName=res.data.userName;
+          self.userName=res.data.tname;
           self.role=res.data.role;
-          if(res.data.role=='教学秘书')
+          storage["teacherRole"]=res.data.role;
+          storage["teacherDept"]=res.data.dept;
+          if(res.data.role=='指导老师')
             self.sideBarList.push({'t': '学生管理','a':true})
+          else
+            self.sideBarList.push({'t': '论文评审','a':true})
         } else {
           self.$notify({ type: "danger", message: "网络连接错误" });
         }
@@ -72,7 +76,7 @@ export default {
       this.show = false;
       let self = this;
       setTimeout(function () {
-        self.$router.push({ name: "teacher"+index });
+        self.$router.push({ name: "teacher"+self.sideBarList[index].t });
         self.show = true;
       }, 500);
     },

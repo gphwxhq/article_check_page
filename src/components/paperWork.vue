@@ -7,12 +7,12 @@
       @search="onSearch"
     />
     <!-- <div> -->
-    <div class="article_button_group">
-      <van-button type="primary" plain @click="onAdd">添加</van-button>
+    <div class="button_group">
+      <!-- <van-button type="primary" plain @click="onAdd">添加</van-button> -->
       <van-button type="primary" plain @click="selectAll">{{
         checkAll ? "取消全选" : "全选"
       }}</van-button>
-      <van-button type="danger" plain @click="deleteSelect">删除</van-button>
+      <!-- <van-button type="danger" plain @click="deleteSelect">删除</van-button> -->
     </div>
     <List
       v-model:loading="state.loading"
@@ -32,9 +32,9 @@
               <van-button type="primary" @click="onModify(item)"
                 >修改</van-button
               >
-              <van-button type="danger" @click="onDelete(i, item)"
+              <!-- <van-button type="danger" @click="onDelete(i, item)"
                 >删除</van-button
-              >
+              > -->
             </van-cell>
             <!-- </div> -->
           </template>
@@ -46,10 +46,10 @@
   <Dialog
     v-model:show="showDialog"
     :title="dialogTitle"
-    :show-confirm-button="false"
+    :show-cancel-button="true"
     confirm-button-text="提交"
   >
-    <van-form @submit="onSubmit">
+    <!-- <van-form @submit="onSubmit">
       <van-field
         v-model="formState.paperNo"
         name="no"
@@ -85,20 +85,26 @@
         placeholder="关键词"
         :rules="[{ required: true, message: '请填写关键词' }]"
       />
-      <template v-if="submitMode==0">
+      <template v-if="submitMode == 0">
         <van-field
           v-model="formState.sno"
           name="sno"
           label="学号"
           placeholder="学号"
-          :rules="[{ required: true, message: '请填写学号' },{ pattern:/^\d{6}$/, message: '请输入6位数字' }]"
+          :rules="[
+            { required: true, message: '请填写学号' },
+            { pattern: /^\d{6}$/, message: '请输入6位数字' },
+          ]"
         />
         <van-field
           v-model="formState.tno"
           name="tno"
           label="教师编号"
           placeholder="教师编号"
-          :rules="[{ required: true, message: '请填写教师编号' },{ pattern:/^\d{8}$/, message: '请输入8位数字' }]"
+          :rules="[
+            { required: true, message: '请填写教师编号' },
+            { pattern: /^\d{8}$/, message: '请输入8位数字' },
+          ]"
         />
       </template>
       <div style="margin: 16px">
@@ -108,22 +114,29 @@
         <van-button round block type="danger" @click="showDialog = false"
           >取消</van-button
         >
-      </div>
-    </van-form>
+      </div>-->
+      <DropdownMenu :overlay="false" z-index="3000">
+        <DropdownItem
+          v-model="dropDownState.value"
+          :options="option"
+          teleport="body"
+        />
+      </DropdownMenu>
+    <!-- </van-form>  -->
     <!-- <img src="https://img01.yzcdn.cn/vant/apple-3.jpg" /> -->
   </Dialog>
   <loading-overlay :show="showOverlay" />
 </template>
 <script>
-import { Search, List, Dialog } from "vant";
+import { Search, List, Dialog,DropdownMenu,DropdownItem } from "vant";
 import loadingOverlay from "./loadingOverlay.vue";
 import { ref, reactive } from "vue";
 export default {
   name: "paperWork",
   data() {
     return {
-      queryNo: "",
-      submitMode: 0,
+      // queryNo: "",
+      // submitMode: 0,
       page: 1,
       result: [],
       checked: [],
@@ -133,6 +146,8 @@ export default {
     };
   },
   components: {
+    DropdownItem,
+    DropdownMenu,
     Search,
     List,
     Dialog: Dialog.Component,
@@ -141,8 +156,14 @@ export default {
   mounted() {
     let storage = window.localStorage;
     this.user = storage.getItem("user");
+    this.role=storage.getItem("teacherRole")
+    this.dept=storage.getItem("teacherDept")
   },
   setup() {
+    const dropDownState = reactive({
+      value: 0,
+    });
+    const option = [{ text: "选择导师", value: 0 }];
     const showOverlay = ref(false);
     const showDialog = ref(false);
     const searchValue = ref("");
@@ -151,20 +172,22 @@ export default {
       loading: false,
       finished: false,
     });
-    const formState = reactive({
-      paperNo: "",
-      title: "",
-      num: "",
-      summary: "",
-      sno: "",
-      tno: "",
-      keyword: "",
-    });
+    // const formState = reactive({
+    //   paperNo: "",
+    //   title: "",
+    //   num: "",
+    //   summary: "",
+    //   sno: "",
+    //   tno: "",
+    //   keyword: "",
+    // });
     return {
+      dropDownState,
+      option,
       searchValue,
       state,
       showDialog,
-      formState,
+      // formState,
       showOverlay,
     };
   },
@@ -204,41 +227,41 @@ export default {
       // }
       // }, 1000);
     },
-    onAdd() {
-      this.dialogTitle = "添加论文";
-      this.submitMode = 0;
-      this.showDialog = true;
-    },
-    onSubmit(values) {
-      values["handle"] = this.submitMode;
-      if (this.submitMode == 1) {
-        values["newno"] = values["no"];
-        values["no"] = this.queryNo;
-      }
-      console.log("submit", values);
-      let self = this;
-      this.$http({
-        method: "post",
-        url: "/adminPage/addPaper",
-        data: values,
-      })
-        .then(function (res) {
-          if (res.status == 200) {
-            console.log(res.data);
-            if (res.data.success) {
-              self.$notify({ type: "success", message: "添加成功" });
-            } else {
-              self.$notify({ type: "danger", message: "网络连接错误" });
-            }
-          } else {
-            self.$notify({ type: "danger", message: "网络连接错误" });
-          }
-        })
-        .catch((err) => {
-          console.log("rejected", err);
-          self.$notify({ type: "danger", message: "网络连接错误" });
-        });
-    },
+    // onAdd() {
+    //   this.dialogTitle = "添加论文";
+    //   this.submitMode = 0;
+    //   this.showDialog = true;
+    // },
+    // onSubmit(values) {
+    //   values["handle"] = this.submitMode;
+    //   if (this.submitMode == 1) {
+    //     values["newno"] = values["no"];
+    //     values["no"] = this.queryNo;
+    //   }
+    //   console.log("submit", values);
+    //   let self = this;
+    //   this.$http({
+    //     method: "post",
+    //     url: "/teacherPage/addPaper",
+    //     data: values,
+    //   })
+    //     .then(function (res) {
+    //       if (res.status == 200) {
+    //         console.log(res.data);
+    //         if (res.data.success) {
+    //           self.$notify({ type: "success", message: "添加成功" });
+    //         } else {
+    //           self.$notify({ type: "danger", message: "网络连接错误" });
+    //         }
+    //       } else {
+    //         self.$notify({ type: "danger", message: "网络连接错误" });
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       console.log("rejected", err);
+    //       self.$notify({ type: "danger", message: "网络连接错误" });
+    //     });
+    // },
     onModify(item) {
       console.log(item);
       this.queryNo = item.no;
@@ -247,7 +270,7 @@ export default {
       let self = this;
       this.$http({
         method: "get",
-        url: "/adminPage/modifyPaper",
+        url: "/teacherPage/modifyPaper",
         params: {
           user: item.no,
         },
@@ -264,10 +287,10 @@ export default {
             self.formState.paperNo = res.data.paperNo;
             self.formState.title = res.data.title;
             self.formState.summary = res.data.summary;
-            self.formState.num=res.data.num
+            self.formState.num = res.data.num;
             self.formState.sno = res.data.sno;
             self.formState.tno = res.data.tno;
-            self.formState.keyword=res.data.keyword
+            self.formState.keyword = res.data.keyword;
 
             self.dialogTitle = item.name;
             self.showOverlay = false;
@@ -282,45 +305,45 @@ export default {
           // self.isError = true;
         });
     },
-    onDelete(index, item) {
-      console.log(index, item);
-      Dialog.confirm({
-        title: "删除确认",
-        message: "确认要删除" + item.name + "吗？",
-      })
-        .then(() => {
-          let self = this;
-          this.$http({
-            // headers: {
-            //   "Content-Type": "application/x-www-form-urlencoded",
-            // },
-            method: "post",
-            url: "/adminPage/deletePaper",
-            data: {
-              user: [item.no],
-            },
-          })
-            .then(function (res) {
-              if (res.status == 200) {
-                console.log(res.data);
-                if (res.data.success) {
-                  self.$notify({ type: "success", message: "删除成功" });
-                  self.state.list.splice(index, 1);
-                }
-              } else {
-                self.$notify({ type: "danger", message: "网络连接错误" });
-              }
-            })
-            .catch((err) => {
-              console.log("rejected", err);
-              self.$notify({ type: "danger", message: "网络连接错误" });
-              // self.isError = true;
-            });
-        })
-        .catch(() => {
-          // on cancel
-        });
-    },
+    // onDelete(index, item) {
+    //   console.log(index, item);
+    //   Dialog.confirm({
+    //     title: "删除确认",
+    //     message: "确认要删除" + item.name + "吗？",
+    //   })
+    //     .then(() => {
+    //       let self = this;
+    //       this.$http({
+    //         // headers: {
+    //         //   "Content-Type": "application/x-www-form-urlencoded",
+    //         // },
+    //         method: "post",
+    //         url: "/teacherPage/deletePaper",
+    //         data: {
+    //           user: [item.no],
+    //         },
+    //       })
+    //         .then(function (res) {
+    //           if (res.status == 200) {
+    //             console.log(res.data);
+    //             if (res.data.success) {
+    //               self.$notify({ type: "success", message: "删除成功" });
+    //               self.state.list.splice(index, 1);
+    //             }
+    //           } else {
+    //             self.$notify({ type: "danger", message: "网络连接错误" });
+    //           }
+    //         })
+    //         .catch((err) => {
+    //           console.log("rejected", err);
+    //           self.$notify({ type: "danger", message: "网络连接错误" });
+    //           // self.isError = true;
+    //         });
+    //     })
+    //     .catch(() => {
+    //       // on cancel
+    //     });
+    // },
     selectAll() {
       if (this.$refs.checkboxGroup == null) return;
       this.$refs.checkboxGroup.toggleAll(!this.checkAll);
@@ -341,7 +364,7 @@ export default {
           let self = this;
           this.$http({
             method: "post",
-            url: "/adminPage/deletePaper",
+            url: "/teacherPage/deletePaper",
             data: {
               user: noList,
             },
@@ -373,6 +396,30 @@ export default {
         });
     },
     onSearch(key) {
+      let url=null
+      let params=null
+      if(this.role=="指导老师"){
+        url="zcheckArticle"
+        params={
+          keyWords: key,
+          tno:this.user
+        }
+      }
+      else if(this.role=="专家"){
+        url="pcheckArticle"
+        params={
+          keyWords: key,
+          tno:this.user
+        }
+      }
+      else{
+        params={
+          keyWords: key,
+          dept:this.dept
+        }
+        url="mcheckArticle"
+      }
+        
       console.log(key);
       this.isEmpty = false;
       this.state.loading = true;
@@ -382,10 +429,8 @@ export default {
         //   "Content-Type": "application/x-www-form-urlencoded",
         // },
         method: "get",
-        url: "/adminPage/article",
-        params: {
-          keyWords: key,
-        },
+        url: url,
+        params: params
       })
         .then(function (res) {
           if (res.status == 200) {
@@ -412,14 +457,8 @@ export default {
 };
 </script>
 <style>
-/* .article_button_group {
-  background: white;
-  position: sticky;
-  top: 97px;
-  z-index: 1;
-  text-align: right;
+.van-dropdown-item--down {
+  width: 320px;
+  margin: 0 auto;
 }
-#manageAllArticle .van-button--normal {
-  margin-left: 5px;
-} */
 </style>

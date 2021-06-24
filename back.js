@@ -218,8 +218,9 @@ http.createServer(function (req, res) {
         //console.log(myURL.searchParams.get('getstu') ) 
         console.log(getstu)
         let data = {
-            "userName": "阿巴",
-            "role":"教学秘书"
+            "tname": "阿巴",
+            "role":"教学秘书",
+            "dept":'dept'
         }
         console.log(data)
         setTimeout(function () {

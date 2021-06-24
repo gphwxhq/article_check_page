@@ -7,7 +7,7 @@
       @search="onSearch"
     />
     <!-- <div> -->
-    <div class="person_button_group">
+    <div class="button_group">
       <van-button type="primary" plain @click="onAdd">添加</van-button>
       <van-button type="primary" plain @click="selectAll">{{
         checkAll ? "取消全选" : "全选"
