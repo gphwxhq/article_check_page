@@ -205,7 +205,7 @@ export default {
       // }, 1000);
     },
     onAdd() {
-      this.dialogTitle = "添加人员";
+      this.dialogTitle = "添加论文";
       this.submitMode = 0;
       this.showDialog = true;
     },

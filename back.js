@@ -219,7 +219,25 @@ http.createServer(function (req, res) {
         console.log(getstu)
         let data = {
             "userName": "阿巴",
+            "role":"教学秘书"
         }
+        console.log(data)
+        setTimeout(function () {
+            res.writeHead(200, { 'Content-type': 'application/json' });
+            res.end(JSON.stringify(data))
+        }, 2000)
+    }
+    else if(pathname == '/teacherPage'){
+        let getstu = myURL.searchParams.get('user')
+        //console.log(myURL.searchParams.get('getstu') ) 
+        console.log(getstu)
+        let data={
+            "tno":1,
+            "tname":2,
+            "tdept":3,
+            "role":4,
+            "job":5,
+          }
         console.log(data)
         setTimeout(function () {
             res.writeHead(200, { 'Content-type': 'application/json' });

@@ -20,22 +20,26 @@
       finished-text="没有更多了"
       @load="onLoad"
     >
-    <van-empty v-if="isEmpty" description="无内容" />
-    <template v-if="!isEmpty">
-      <van-checkbox-group v-model="checked" ref="checkboxGroup">
-        <template v-for="(item, i) in state.list" :key="i">
-          <!-- <div class="person_block"> -->
-          <van-cell :title="item.name">
-            <template #icon>
-              <van-checkbox :name="i" />
-            </template>
-            <van-button type="primary" @click="onModify(item)">修改</van-button>
-            <van-button type="danger" @click="onDelete(i, item)">删除</van-button>
-          </van-cell>
-          <!-- </div> -->
-        </template>
-      </van-checkbox-group>
-    </template>
+      <van-empty v-if="isEmpty" description="无内容" />
+      <template v-if="!isEmpty">
+        <van-checkbox-group v-model="checked" ref="checkboxGroup">
+          <template v-for="(item, i) in state.list" :key="i">
+            <!-- <div class="person_block"> -->
+            <van-cell :title="item.name">
+              <template #icon>
+                <van-checkbox :name="i" />
+              </template>
+              <van-button type="primary" @click="onModify(item)"
+                >修改</van-button
+              >
+              <van-button type="danger" @click="onDelete(i, item)"
+                >删除</van-button
+              >
+            </van-cell>
+            <!-- </div> -->
+          </template>
+        </van-checkbox-group>
+      </template>
     </List>
   </div>
 
@@ -48,7 +52,10 @@
     <van-form @submit="onSubmit">
       <van-field name="role" label="单选框">
         <template #input>
-          <van-radio-group v-model="formState.roleChecked" direction="horizontal">
+          <van-radio-group
+            v-model="formState.roleChecked"
+            direction="horizontal"
+          >
             <van-radio name="学生">学生</van-radio>
             <van-radio name="教师">教师</van-radio>
           </van-radio-group>
@@ -59,7 +66,16 @@
         name="no"
         label="编号"
         placeholder="编号"
-        :rules="[{ required: true, message: '请填写编号' }]"
+        :rules="[
+          { required: true, message: '请填写编号' },
+          {
+            validator,
+            message:
+              formState.roleChecked == '学生'
+                ? '请输入6位数字'
+                : '请输入8位数字',
+          },
+        ]"
       />
       <van-field
         v-model="formState.name"
@@ -68,23 +84,16 @@
         placeholder="姓名"
         :rules="[{ required: true, message: '请填写姓名' }]"
       />
-      <template v-if="formState.roleChecked == '学生'">
-        <van-field
-          v-model="formState.dept"
-          name="dept"
-          label="院系"
-          placeholder="院系"
-          :rules="[{ required: true, message: '请填写院系' }]"
-        />
-      </template>
-      <template v-else>
-        <van-field
-          v-model="formState.academy"
-          name="academy"
-          label="学院"
-          placeholder="学院"
-          :rules="[{ required: true, message: '请填写学院' }]"
-        />
+
+      <van-field
+        v-model="formState.dept"
+        name="dept"
+        label="院系"
+        placeholder="院系"
+        :rules="[{ required: true, message: '请填写院系' }]"
+      />
+
+      <template v-if="formState.roleChecked == '教师'">
         <van-field
           v-model="formState.job"
           name="job"
@@ -103,28 +112,28 @@
         :rules="[{ required: true, message: '请填写密码' }]"
       />
       <div style="margin: 16px">
-        <van-button round block type="success" native-type="submit">提交</van-button>
+        <van-button round block type="success" native-type="submit"
+          >提交</van-button
+        >
         <van-button round block type="danger" @click="showDialog = false"
-          >取消</van-button>
+          >取消</van-button
+        >
       </div>
     </van-form>
     <!-- <img src="https://img01.yzcdn.cn/vant/apple-3.jpg" /> -->
   </Dialog>
-  <loading-overlay :show="showOverlay"/>
+  <loading-overlay :show="showOverlay" />
 </template>
 <script>
-import {
-  Search,
-  List,
-  Dialog
-} from "vant";
-import loadingOverlay from "./loadingOverlay.vue"
+import { Search, List, Dialog } from "vant";
+import loadingOverlay from "./loadingOverlay.vue";
 import { ref, reactive } from "vue";
 export default {
   name: "manageStudent",
   data() {
     return {
-      submitMode:0,
+      queryNo: "",
+      submitMode: 0,
       page: 1,
       result: [],
       checked: [],
@@ -137,13 +146,17 @@ export default {
     Search,
     List,
     Dialog: Dialog.Component,
-    loadingOverlay
+    loadingOverlay,
   },
   mounted() {
     let storage = window.localStorage;
     this.user = storage.getItem("user");
   },
   setup() {
+    const validator = (val) =>
+      formState.roleChecked == "学生"
+        ? /^\d{6}$/.test(val)
+        : /^\d{8}$/.test(val);
     const showOverlay = ref(false);
     const showDialog = ref(false);
     const searchValue = ref("");
@@ -157,12 +170,12 @@ export default {
       name: "",
       role: "",
       job: "",
-      academy: "",
       password: "",
       dept: "",
       roleChecked: ref("学生"),
     });
     return {
+      validator,
       searchValue,
       state,
       showDialog,
@@ -182,10 +195,10 @@ export default {
       // }
       if (this.result.length == 0) {
         this.state.loading = false;
-        this.isEmpty=true
+        this.isEmpty = true;
         return;
       }
-      this.isEmpty=false
+      this.isEmpty = false;
       if (this.result.length >= this.page * 10) {
         for (let i = (this.page - 1) * 10; i < this.page * 10; i++)
           this.state.list.push(this.result[i]);
@@ -208,12 +221,16 @@ export default {
     },
     onAdd() {
       this.dialogTitle = "添加人员";
+      this.submitMode = 0;
       this.showDialog = true;
-      this.submitMode=0
     },
     onSubmit(values) {
+      values["handle"] = this.submitMode;
+      if (this.submitMode == 1) {
+        values["newno"] = values["no"];
+        values["no"] = this.queryNo;
+      }
       console.log("submit", values);
-      values['handle']=this.submitMode
       let self = this;
       this.$http({
         method: "post",
@@ -239,8 +256,9 @@ export default {
     },
     onModify(item) {
       console.log(item);
+      this.queryNo = item.no;
       this.showOverlay = true;
-      this.submitMode=1
+      this.submitMode = 1;
       let self = this;
       this.$http({
         method: "get",
@@ -256,6 +274,8 @@ export default {
             self.formState.name = res.data.userName;
             self.formState.password = res.data.password;
             self.formState.roleChecked = res.data.role;
+            self.formState.dept = res.data.userDept;
+            if (res.data.role == "教师") self.formState.job = res.data.userJob;
 
             self.dialogTitle = item.name;
             self.showOverlay = false;
@@ -310,14 +330,12 @@ export default {
         });
     },
     selectAll() {
-      if (this.$refs.checkboxGroup==null)
-        return
+      if (this.$refs.checkboxGroup == null) return;
       this.$refs.checkboxGroup.toggleAll(!this.checkAll);
       this.checkAll = !this.checkAll;
     },
     deleteSelect() {
-      if(this.checked.length==0)
-      return
+      if (this.checked.length == 0) return;
       let noList = [];
       for (let i in this.checked) {
         noList.push(this.state.list[i].no);
@@ -335,7 +353,6 @@ export default {
             data: {
               user: noList,
             },
-
           })
             .then(function (res) {
               if (res.status == 200) {
@@ -365,7 +382,7 @@ export default {
     },
     onSearch(key) {
       console.log(key);
-      this.isEmpty=false
+      this.isEmpty = false;
       this.state.loading = true;
       let self = this;
       this.$http({

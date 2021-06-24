@@ -2,7 +2,7 @@
   <mtitle user="教师端" :userName="userName"/>
   <sideBar
     @change="handleChange"
-    :mlist="[{'t':'个人信息','a':true},{'t': '学生管理','a':true},{'t': '论文评审','a':true}]"
+    :mlist="sideBarList"
   ></sideBar>
   <router-view v-slot="{ Component }">
     <transition name="van-fade">
@@ -20,8 +20,10 @@ export default {
   data() {
     return {
       userName:null,
+      role:null,
       user: null,
       show: false,
+      sideBarList:[{'t':'个人信息','a':true},{'t': '论文评审','a':true}]
     };
   },
   components: {
@@ -53,6 +55,9 @@ export default {
         if (res.status == 200) {
           console.log(res.data);
           self.userName=res.data.userName;
+          self.role=res.data.role;
+          if(res.data.role=='教学秘书')
+            self.sideBarList.push({'t': '学生管理','a':true})
         } else {
           self.$notify({ type: "danger", message: "网络连接错误" });
         }

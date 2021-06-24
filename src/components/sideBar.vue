@@ -2,7 +2,7 @@
 <div class="msidebar">
   <Sidebar  v-model="activeKey" @change="onChange">
     <!-- <div class="title">导航</div> -->
-    <SidebarItem v-bind:title="item.t" v-for="item in mlist" :key="item" :disabled="!item.a"/>
+    <SidebarItem :title="item.t" v-for="item in mlist" :key="item" :disabled="!item.a"/>
   </Sidebar>
 </div>
 </template>
@@ -11,7 +11,7 @@ import { Sidebar,SidebarItem } from "vant";
 
 export default {
   name: "sideBar",
-  props: ["mlist","active"],
+  props: ["mlist"],
   data() {
     return {
       activeKey: 0,

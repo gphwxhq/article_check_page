@@ -19,10 +19,11 @@ export default {
   data() {
     return {
       baseInfo: {
-        // 姓名: 1,
-        // 学号: 2,
-        // 专业: 3,
-        // 指导老师: 4,
+        工号:null,
+        姓名: null,
+        院系:null,
+        职称: null,
+        职务: null,
       },
       isLoading: true,
       isError: false,
@@ -49,10 +50,11 @@ export default {
       .then(function (res) {
         if (res.status == 200) {
           console.log(res.data);
-        //   self.baseInfo.姓名 = res.data.Sname;
-        //   self.baseInfo.学号 = res.data.Sno;
-        //   self.baseInfo.专业 = res.data.Sdept;
-        //   self.baseInfo.指导老师 = res.data.Teacher;
+          self.baseInfo.工号 = res.data.tno;
+          self.baseInfo.姓名 = res.data.tname;
+          self.baseInfo.院系 = res.data.tdept;
+          self.baseInfo.职称 = res.data.job;
+          self.baseInfo.职务 = res.data.role;
           // self.$emit("name", res.data.Sname);
           self.isLoading = false;
         } else {
