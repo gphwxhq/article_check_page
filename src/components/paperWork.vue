@@ -61,6 +61,7 @@
     confirm-button-text="提交"
     @confirm="onConfirm"
     :beforeClose="beforeClose"
+
   >
     <van-cell-group title="论文信息">
       <van-cell
@@ -84,7 +85,7 @@
         />
       </DropdownMenu>
       <van-field
-        v-else-if="role == '指导老师'"
+        v-else
         v-model="suggestions"
         label="意见"
         placeholder="请输入意见"
@@ -500,7 +501,10 @@ export default {
 </script>
 <style>
 .van-dropdown-item--up {
-  width: 320px;
+  width: 700px;
   margin: 0 auto;
+}
+.van-dialog{
+  width: 700px;
 }
 </style>

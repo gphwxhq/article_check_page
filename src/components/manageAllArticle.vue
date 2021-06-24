@@ -226,7 +226,7 @@ export default {
           if (res.status == 200) {
             console.log(res.data);
             if (res.data.success) {
-              if (this.submitMode == 0)
+              if (self.submitMode == 0)
                 self.$notify({ type: "success", message: "添加成功" });
               else self.$notify({ type: "success", message: "修改成功" });
             } else {
